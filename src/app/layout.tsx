@@ -2,12 +2,13 @@ import type { Metadata } from 'next';
 
 import { siteConfig } from '~/config/site';
 import { fontSans } from '~/lib/fonts';
-import { cn } from '~/lib/utils';
+import { absoluteUrl, cn } from '~/lib/utils';
 import { ThemeProvider } from '~/components/layouts/theme-provider';
 
 import '~/styles/globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(absoluteUrl('')),
   title: {
     default: siteConfig.title,
     template: `%s - ${siteConfig.title}`,
