@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 import { siteConfig } from '~/config/site';
 import { fontSans } from '~/lib/fonts';
@@ -8,12 +8,20 @@ import { ThemeProvider } from '~/components/layouts/theme-provider';
 import '~/styles/globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(absoluteUrl('')),
+  metadataBase: new URL(absoluteUrl()),
   title: {
     default: siteConfig.title,
     template: `%s - ${siteConfig.title}`,
   },
   description: siteConfig.description,
+};
+
+export const viewport: Viewport = {
+  colorScheme: 'dark light',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: 'white' },
+    { media: '(prefers-color-scheme: dark)', color: 'black' },
+  ],
 };
 
 export default function RootLayout({ children }: React.PropsWithChildren) {
