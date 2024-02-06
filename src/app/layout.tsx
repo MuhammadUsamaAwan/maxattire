@@ -7,6 +7,8 @@ import { ThemeProvider } from '~/components/layouts/theme-provider';
 
 import '~/styles/globals.css';
 
+import { TailwindIndicator } from '~/components/layouts/tailwind-indicator';
+
 export const metadata: Metadata = {
   metadataBase: new URL(absoluteUrl()),
   title: {
@@ -30,6 +32,7 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
       <body className={cn('flex min-h-dvh flex-col font-sans antialiased', fontSans.variable)}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
           {children}
+          <TailwindIndicator />
         </ThemeProvider>
       </body>
     </html>
