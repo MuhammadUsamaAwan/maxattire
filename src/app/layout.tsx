@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <html lang='en' suppressHydrationWarning>
-      <body className={cn('flex min-h-screen flex-col font-sans antialiased', fontSans.variable)}>
+      <body className={cn('flex min-h-dvh flex-col font-sans antialiased', fontSans.variable)}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>
