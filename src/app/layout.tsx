@@ -7,6 +7,7 @@ import { ThemeProvider } from '~/components/layouts/theme-provider';
 
 import '~/styles/globals.css';
 
+import { TooltipProvider } from '~/components/ui/tooltip';
 import { TailwindIndicator } from '~/components/layouts/tailwind-indicator';
 
 export const metadata: Metadata = {
@@ -31,8 +32,10 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
     <html lang='en' suppressHydrationWarning>
       <body className={cn('flex min-h-dvh flex-col font-sans antialiased', fontSans.variable)}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
-          {children}
-          <TailwindIndicator />
+          <TooltipProvider>
+            {children}
+            <TailwindIndicator />
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>
