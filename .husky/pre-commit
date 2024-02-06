@@ -1,0 +1,2 @@
+pnpm precommit
+npx --no -- commitlint --edit $1
