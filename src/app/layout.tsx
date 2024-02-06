@@ -7,6 +7,7 @@ import { ThemeProvider } from '~/components/layouts/theme-provider';
 
 import '~/styles/globals.css';
 
+import { Toaster } from '~/components/ui/toaster';
 import { TooltipProvider } from '~/components/ui/tooltip';
 import { TailwindIndicator } from '~/components/layouts/tailwind-indicator';
 
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
             {children}
             <TailwindIndicator />
           </TooltipProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
