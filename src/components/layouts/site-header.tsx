@@ -1,11 +1,8 @@
 import Link from 'next/link';
 import { DashboardIcon, ExitIcon, GearIcon } from '@radix-ui/react-icons';
 
-// import { dashboardConfig } from '~/config/dashboard';
-import { siteConfig } from '~/config/site';
 import { getCategories } from '~/lib/fetchers/categories';
 import { getStores } from '~/lib/fetchers/stores';
-// import { getUserEmail } from '~/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
 import {
@@ -21,10 +18,8 @@ import {
 import { CartSheet } from '~/components/checkout/cart-sheet';
 import { Icons } from '~/components/icons';
 import { MainNav } from '~/components/layouts/main-nav';
+import { MobileNav } from '~/components/layouts/mobile-nav';
 import { ProductSearch } from '~/components/layouts/products-search';
-
-// import { MobileNav } from '~/components/layouts/mobile-nav';
-// import { ProductsCommandMenu } from '~/components/products-command-menu';
 
 export async function SiteHeader() {
   const categoriesPromise = getCategories();
@@ -36,7 +31,7 @@ export async function SiteHeader() {
     <header className='sticky top-0 z-50 w-full border-b bg-background'>
       <div className='container flex h-16 items-center'>
         <MainNav categories={categories} stores={stores} />
-        {/*  <MobileNav mainNavItems={siteConfig.mainNav} sidebarNavItems={dashboardConfig.sidebarNav} /> */}
+        <MobileNav categories={categories} stores={stores} />
         <div className='flex flex-1 items-center justify-end space-x-4'>
           <nav className='flex items-center space-x-2'>
             <ProductSearch />
