@@ -25,3 +25,19 @@ export function catchError(err: unknown) {
     return toast.error('Something went wrong, please try again later.');
   }
 }
+
+export function formatPrice(
+  price: number | string,
+  options: {
+    currency?: 'USD' | 'EUR' | 'GBP' | 'BDT';
+    notation?: Intl.NumberFormatOptions['notation'];
+  } = {}
+) {
+  const { currency = 'USD', notation = 'compact' } = options;
+
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+    notation,
+  }).format(Number(price));
+}

@@ -12,6 +12,7 @@ import {
   DotsHorizontalIcon,
   MagnifyingGlassIcon,
 } from '@radix-ui/react-icons';
+import { ShoppingCart } from 'lucide-react';
 
 export const Icons = {
   arrowLeft: ArrowLeftIcon,
@@ -26,4 +27,5 @@ export const Icons = {
   dot: DotFilledIcon,
   dotsHorizontal: DotsHorizontalIcon,
   search: MagnifyingGlassIcon,
+  cart: ShoppingCart,
 };

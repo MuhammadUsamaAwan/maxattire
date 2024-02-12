@@ -4,7 +4,6 @@ import {
   date,
   datetime,
   double,
-  index,
   int,
   longtext,
   mysqlEnum,
@@ -288,7 +287,6 @@ export const oauthAccessTokens = mysqlTable(
   },
   table => {
     return {
-      userIdIdx: index().on(table.userId),
       oauthAccessTokensId: primaryKey({ columns: [table.id], name: 'oauth_access_tokens_id' }),
     };
   }
@@ -306,7 +304,6 @@ export const oauthAuthCodes = mysqlTable(
   },
   table => {
     return {
-      userIdIdx: index().on(table.userId),
       oauthAuthCodesId: primaryKey({ columns: [table.id], name: 'oauth_auth_codes_id' }),
     };
   }
@@ -329,7 +326,6 @@ export const oauthClients = mysqlTable(
   },
   table => {
     return {
-      userIdIdx: index().on(table.userId),
       oauthClientsId: primaryKey({ columns: [table.id], name: 'oauth_clients_id' }),
     };
   }
@@ -360,7 +356,6 @@ export const oauthRefreshTokens = mysqlTable(
   },
   table => {
     return {
-      accessTokenIdIdx: index().on(table.accessTokenId),
       oauthRefreshTokensId: primaryKey({ columns: [table.id], name: 'oauth_refresh_tokens_id' }),
     };
   }
@@ -500,19 +495,11 @@ export const pages = mysqlTable(
   }
 );
 
-export const passwordResets = mysqlTable(
-  'password_resets',
-  {
-    email: varchar('email', { length: 191 }).notNull(),
-    token: varchar('token', { length: 191 }).notNull(),
-    createdAt: timestamp('created_at', { mode: 'string' }),
-  },
-  table => {
-    return {
-      emailIdx: index().on(table.email),
-    };
-  }
-);
+export const passwordResets = mysqlTable('password_resets', {
+  email: varchar('email', { length: 191 }).notNull(),
+  token: varchar('token', { length: 191 }).notNull(),
+  createdAt: timestamp('created_at', { mode: 'string' }),
+});
 
 export const paymentTypes = mysqlTable(
   'payment_types',
@@ -570,7 +557,6 @@ export const personalAccessTokens = mysqlTable(
   },
   table => {
     return {
-      tokenableTypeTokenableIdIdx: index().on(table.tokenableType, table.tokenableId),
       personalAccessTokensId: primaryKey({ columns: [table.id], name: 'personal_access_tokens_id' }),
       personalAccessTokensTokenUnique: unique('personal_access_tokens_token_unique').on(table.token),
     };
