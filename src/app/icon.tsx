@@ -13,7 +13,9 @@ export default function Icon() {
     (
       // TODO: Wait for next/og to support size
       // eslint-disable-next-line tailwindcss/enforces-shorthand
-      <div tw='flex h-full w-full items-center justify-center bg-black text-[22px] leading-8 text-white'>E</div>
+      <div tw='flex h-full w-full items-center justify-center rounded-sm bg-[#E1252F] text-base leading-8 text-black'>
+        MA
+      </div>
     ),
     {
       ...size,
