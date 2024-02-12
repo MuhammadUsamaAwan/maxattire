@@ -1,4 +1,4 @@
-import { sql } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import {
   bigint,
   date,
@@ -968,3 +968,14 @@ export const verificationtoken = mysqlTable(
     };
   }
 );
+
+export const categoriesRelations = relations(categories, ({ one, many }) => ({
+  children: many(categories, {
+    relationName: 'category_children',
+  }),
+  parent: one(categories, {
+    fields: [categories.parentId],
+    references: [categories.id],
+    relationName: 'category_children',
+  }),
+}));
