@@ -35,7 +35,7 @@ export function ProductCard({ product }: ProductCard) {
         <Link aria-label={product.title} href={`/product/${product.slug}`}>
           <AspectRatio ratio={4 / 3}>
             {product.thumbnail ? (
-              <Image src={'/images/logo.jpeg'} alt={product.title} className='object-cover' fill loading='lazy' />
+              <Image src={product.thumbnail ?? ''} alt={product.title} className='object-cover' fill loading='lazy' />
             ) : (
               <PlaceholderImage className='rounded-none' asChild />
             )}

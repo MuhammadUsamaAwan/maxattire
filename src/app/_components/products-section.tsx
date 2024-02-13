@@ -1,14 +1,18 @@
-import { getNewProducts } from '~/lib/fetchers/products';
+import { type Products } from '~/lib/fetchers/products';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '~/components/ui/carousel';
 import { ProductCard } from '~/components/cards/product-card';
 
 import { ContentSection } from './content-section';
 
-export async function NewArrivals() {
-  const products = await getNewProducts();
+type ProductsSectionProps = React.HTMLAttributes<HTMLDivElement> & {
+  products: Products;
+  title: string;
+  description: string;
+};
 
+export function ProductsSection({ products, ...props }: ProductsSectionProps) {
   return (
-    <ContentSection title='New Arrivals' description='Explore our latest products' className='bg-accent'>
+    <ContentSection {...props}>
       <Carousel>
         <CarouselContent>
           {products.map(product => (
