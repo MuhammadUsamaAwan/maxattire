@@ -33,7 +33,9 @@ export function MainNav({ categories, stores }: MainNavProps) {
         <NavigationMenuList>
           {categories.map(category => (
             <NavigationMenuItem key={category.slug}>
-              <NavigationMenuTrigger className='h-auto capitalize'>{category.title}</NavigationMenuTrigger>
+              <NavigationMenuTrigger className='h-auto capitalize'>
+                <Link href={category.slug}>{category.title}</Link>
+              </NavigationMenuTrigger>
               <NavigationMenuContent className='flex items-start gap-3 p-6'>
                 <ul className='w-max shrink-0 space-y-1.5 md:w-[200px]'>
                   <li className='text-sm font-semibold'>Categories Pages</li>
