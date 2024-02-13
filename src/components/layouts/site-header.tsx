@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { type Session } from 'next-auth';
 
+import { signOut } from '~/lib/actions/auth';
 import { type Categories } from '~/lib/fetchers/categories';
 import { type Stores } from '~/lib/fetchers/stores';
 import { getInitials } from '~/lib/utils';
@@ -71,10 +72,12 @@ export function SiteHeader({ categories, session, stores }: SiteHeaderProps) {
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href='/signout'>
-                      <Icons.logout className='mr-2 size-4' aria-hidden='true' />
-                      Log out
-                    </Link>
+                    <form action={signOut} className='w-full'>
+                      <button className='inline-flex w-full items-center'>
+                        <Icons.logout className='mr-2 size-4' aria-hidden='true' />
+                        Log out
+                      </button>
+                    </form>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

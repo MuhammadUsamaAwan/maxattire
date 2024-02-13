@@ -12,14 +12,16 @@ import {
   DotFilledIcon,
   DotsHorizontalIcon,
   ExitIcon,
+  EyeNoneIcon,
+  EyeOpenIcon,
   GearIcon,
   ImageIcon,
   MagnifyingGlassIcon,
 } from '@radix-ui/react-icons';
-import { ShoppingCart } from 'lucide-react';
+import { Loader2, ShoppingCart } from 'lucide-react';
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
 import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa';
-import { FaXTwitter } from 'react-icons/fa6';
+import { FaGoogle, FaXTwitter } from 'react-icons/fa6';
 
 export const Icons = {
   arrowLeft: ArrowLeftIcon,
@@ -35,15 +37,19 @@ export const Icons = {
   dot: DotFilledIcon,
   dotsHorizontal: DotsHorizontalIcon,
   logout: ExitIcon,
+  eyeNone: EyeNoneIcon,
+  eyeOpen: EyeOpenIcon,
   settings: GearIcon,
   placeholder: ImageIcon,
   search: MagnifyingGlassIcon,
+  spinner: Loader2,
   cart: ShoppingCart,
   star: BsStar,
   starFill: BsStarFill,
   starHalf: BsStarHalf,
   facebook: FaFacebook,
-  linkedin: FaLinkedin,
-  twitter: FaXTwitter,
   instagram: FaInstagram,
+  linkedin: FaLinkedin,
+  google: FaGoogle,
+  twitter: FaXTwitter,
 };
