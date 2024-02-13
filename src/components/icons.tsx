@@ -13,6 +13,7 @@ import {
   DotsHorizontalIcon,
   ExitIcon,
   GearIcon,
+  ImageIcon,
   MagnifyingGlassIcon,
 } from '@radix-ui/react-icons';
 import { ShoppingCart } from 'lucide-react';
@@ -32,6 +33,7 @@ export const Icons = {
   dotsHorizontal: DotsHorizontalIcon,
   logout: ExitIcon,
   settings: GearIcon,
+  placeholder: ImageIcon,
   search: MagnifyingGlassIcon,
   cart: ShoppingCart,
 };

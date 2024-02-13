@@ -54,7 +54,7 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
     <html lang='en' suppressHydrationWarning>
       <body className={cn('flex min-h-dvh flex-col font-sans antialiased', fontSans.variable)}>
         <ThemeProvider attribute='class' defaultTheme='light' enableSystem disableTransitionOnChange>
-          <TooltipProvider>
+          <TooltipProvider delayDuration={500}>
             <SiteHeader categories={categories} session={session} stores={stores} />
             <main className='flex-1'>{children}</main>
             <TailwindIndicator />

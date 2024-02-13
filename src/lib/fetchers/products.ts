@@ -13,6 +13,21 @@ export async function getNewProducts() {
       sellPrice: true,
       discount: true,
     },
+    with: {
+      productStocks: {
+        columns: {
+          id: true,
+        },
+        with: {
+          color: {
+            columns: {
+              title: true,
+              code: true,
+            },
+          },
+        },
+      },
+    },
     limit: 8,
   });
 }

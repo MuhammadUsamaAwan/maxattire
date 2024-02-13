@@ -979,3 +979,22 @@ export const categoriesRelations = relations(categories, ({ one, many }) => ({
     relationName: 'category_children',
   }),
 }));
+
+export const productsRelations = relations(products, ({ many }) => ({
+  productStocks: many(productStocks),
+}));
+
+export const productStockRelations = relations(productStocks, ({ one }) => ({
+  product: one(products, {
+    fields: [productStocks.productId],
+    references: [products.id],
+  }),
+  color: one(colors, {
+    fields: [productStocks.colorId],
+    references: [colors.id],
+  }),
+}));
+
+export const colorsRelations = relations(colors, ({ many }) => ({
+  productStocks: many(productStocks),
+}));
