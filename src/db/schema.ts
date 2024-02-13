@@ -978,20 +978,4 @@ export const categoriesRelations = relations(categories, ({ one, many }) => ({
     references: [categories.id],
     relationName: 'category_children',
   }),
-  storeCategories: many(storeCategories),
-}));
-
-export const storeCategoriesRelations = relations(storeCategories, ({ one }) => ({
-  category: one(categories, {
-    fields: [storeCategories.categoryId],
-    references: [categories.id],
-  }),
-  store: one(stores, {
-    fields: [storeCategories.storeId],
-    references: [stores.id],
-  }),
-}));
-
-export const storesRelations = relations(stores, ({ many }) => ({
-  categories: many(storeCategories),
 }));

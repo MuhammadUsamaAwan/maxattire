@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 import { siteConfig } from '~/config/site';
 import { type Categories } from '~/lib/fetchers/categories';
+import { type Stores } from '~/lib/fetchers/stores';
 import { cn } from '~/lib/utils';
 import {
   NavigationMenu,
@@ -18,9 +19,10 @@ import {
 
 type MainNavProps = {
   categories: Categories;
+  stores: Stores;
 };
 
-export function MainNav({ categories }: MainNavProps) {
+export function MainNav({ categories, stores }: MainNavProps) {
   return (
     <div className='hidden gap-6 lg:flex'>
       <Link href='/' className='hidden items-center space-x-2 lg:flex'>
@@ -42,7 +44,7 @@ export function MainNav({ categories }: MainNavProps) {
                 <div className='space-y-1.5'>
                   <div className='text-sm font-semibold'>Featured Brands</div>
                   <div className='grid grid-cols-4 border-[0.5px] md:w-[400px] lg:w-[500px]'>
-                    {category.storeCategories.map(({ store }) => (
+                    {stores.map(store => (
                       <Link key={store.slug} href={`/stores/${store.slug}`} className='block border-[0.5px] p-5'>
                         <Image src={store.logo ?? ''} alt={store.slug} width={86} height={38} />
                       </Link>

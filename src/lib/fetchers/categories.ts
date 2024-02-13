@@ -19,17 +19,6 @@ export async function getCategories() {
           slug: true,
         },
       },
-      storeCategories: {
-        columns: {},
-        with: {
-          store: {
-            columns: {
-              slug: true,
-              logo: true,
-            },
-          },
-        },
-      },
     },
   });
 }

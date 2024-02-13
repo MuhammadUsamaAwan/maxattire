@@ -14,6 +14,8 @@ import { ThemeProvider } from '~/components/layouts/theme-provider';
 
 import '~/styles/globals.css';
 
+import { getStores } from '~/lib/fetchers/stores';
+
 export const metadata: Metadata = {
   metadataBase: new URL(absoluteUrl()),
   title: {
@@ -34,7 +36,8 @@ export const viewport: Viewport = {
 const getCachedData = unstable_cache(
   async () => {
     const categoriesPromise = getCategories();
-    return Promise.all([categoriesPromise]);
+    const storesPromise = getStores();
+    return Promise.all([categoriesPromise, storesPromise]);
   },
   [],
   {
@@ -45,14 +48,14 @@ const getCachedData = unstable_cache(
 export default async function RootLayout({ children }: React.PropsWithChildren) {
   const dataPromise = getCachedData();
   const sessionPromise = auth();
-  const [[categories], session] = await Promise.all([dataPromise, sessionPromise]);
+  const [[categories, stores], session] = await Promise.all([dataPromise, sessionPromise]);
 
   return (
     <html lang='en' suppressHydrationWarning>
       <body className={cn('flex min-h-dvh flex-col font-sans antialiased', fontSans.variable)}>
         <ThemeProvider attribute='class' defaultTheme='light' enableSystem disableTransitionOnChange>
           <TooltipProvider>
-            <SiteHeader categories={categories} session={session} />
+            <SiteHeader categories={categories} session={session} stores={stores} />
             <main className='flex-1'>{children}</main>
             <TailwindIndicator />
           </TooltipProvider>
