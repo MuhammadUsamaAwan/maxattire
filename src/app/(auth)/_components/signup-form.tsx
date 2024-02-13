@@ -6,32 +6,33 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import type { z } from 'zod';
 
-import { signInWithCredentials } from '~/lib/actions/auth';
+import { signUpWithCredentials } from '~/lib/actions/auth';
 import { catchError } from '~/lib/utils';
-import { signInSchema } from '~/lib/validations/auth';
+import { signUpSchema } from '~/lib/validations/auth';
 import { Button } from '~/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
 import { Icons } from '~/components/icons';
 import { PasswordInput } from '~/components/password-input';
 
-type Inputs = z.infer<typeof signInSchema>;
+type Inputs = z.infer<typeof signUpSchema>;
 
-export function SignInForm() {
+export function SignUpForm() {
   const [isPending, startTransition] = React.useTransition();
 
   const form = useForm<Inputs>({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       email: '',
       password: '',
+      confirmPassword: '',
     },
   });
 
   function onSubmit(data: Inputs) {
     startTransition(async () => {
       try {
-        await signInWithCredentials(data);
+        await signUpWithCredentials(data);
         redirect('/');
       } catch (error) {
         catchError(error);
@@ -49,7 +50,7 @@ export function SignInForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type='text' placeholder='example@test.com' {...field} />
+                <Input placeholder='example@test.com' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -68,10 +69,23 @@ export function SignInForm() {
             </FormItem>
           )}
         />
-        <Button type='submit' disabled={isPending}>
+        <FormField
+          control={form.control}
+          name='confirmPassword'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
+              <FormControl>
+                <PasswordInput placeholder='**********' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button disabled={isPending}>
           {isPending && <Icons.spinner className='mr-2 size-4 animate-spin' aria-hidden='true' />}
-          Sign in
-          <span className='sr-only'>Sign in</span>
+          Continue
+          <span className='sr-only'>Continue to email verification page</span>
         </Button>
       </form>
     </Form>

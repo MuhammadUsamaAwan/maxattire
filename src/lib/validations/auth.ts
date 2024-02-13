@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const authSchema = z.object({
+export const signInSchema = z.object({
   email: z.string().email({
     message: 'Please enter a valid email address',
   }),
@@ -12,11 +12,11 @@ export const authSchema = z.object({
     .max(100),
 });
 
-export const signupSchema = z
+export const signUpSchema = z
   .object({
-    email: authSchema.shape.email,
-    password: authSchema.shape.password,
-    confirmPassword: authSchema.shape.password,
+    email: signInSchema.shape.email,
+    password: signInSchema.shape.password,
+    confirmPassword: signInSchema.shape.password,
   })
   .refine(data => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
@@ -33,13 +33,13 @@ export const verifyEmailSchema = z.object({
 });
 
 export const checkEmailSchema = z.object({
-  email: authSchema.shape.email,
+  email: signInSchema.shape.email,
 });
 
 export const resetPasswordSchema = z
   .object({
-    password: authSchema.shape.password,
-    confirmPassword: authSchema.shape.password,
+    password: signInSchema.shape.password,
+    confirmPassword: signInSchema.shape.password,
     code: verifyEmailSchema.shape.code,
   })
   .refine(data => data.password === data.confirmPassword, {

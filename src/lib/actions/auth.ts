@@ -2,20 +2,20 @@
 'use server';
 
 import { db } from '~/db';
-import { compare } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { and, eq, isNull } from 'drizzle-orm';
 import { type z } from 'zod';
 
 import { users } from '~/db/schema';
 import { signOut as authSignOut, signIn } from '~/lib/auth';
-import { authSchema } from '~/lib/validations/auth';
+import { signInSchema, signUpSchema } from '~/lib/validations/auth';
 
 export async function signInWithGoogle() {
   await signIn('google');
 }
 
-export async function signInWithCredentials(rawInput: z.infer<typeof authSchema>) {
-  const { email, password } = authSchema.parse(rawInput);
+export async function signInWithCredentials(rawInput: z.infer<typeof signInSchema>) {
+  const { email, password } = signInSchema.parse(rawInput);
   const user = await db.query.users.findFirst({
     where: and(eq(users.email, email), isNull(users.deletedAt)),
   });
@@ -26,10 +26,6 @@ export async function signInWithCredentials(rawInput: z.infer<typeof authSchema>
   if (!valid) {
     throw new Error('Invalid email or password');
   }
-  // TODO: email verification
-  //   if (!user.emailVerifiedAt) {
-  //     throw new Error('Email is not verified');
-  //   }
   if (user.status === 'not-active') {
     throw new Error('User is not active');
   }
@@ -41,6 +37,34 @@ export async function signInWithCredentials(rawInput: z.infer<typeof authSchema>
     email: user.email,
     image: user.image,
   });
+}
+
+export async function signUpWithCredentials(rawInput: z.infer<typeof signUpSchema>) {
+  const { email, password } = signUpSchema.parse(rawInput);
+  const hashed = await hash(password, 10);
+  try {
+    const [user] = await db.insert(users).values({
+      email,
+      password: hashed,
+      status: 'active',
+    });
+    await signIn('credentials', {
+      id: String(user.insertId),
+      email: email,
+      image: null,
+    });
+  } catch (error) {
+    if (
+      typeof error === 'object' &&
+      error &&
+      'code' in error &&
+      typeof error.code === 'string' &&
+      error.code === 'ER_DUP_ENTRY'
+    ) {
+      throw new Error('Email is already in use');
+    }
+    throw error;
+  }
 }
 
 export async function signOut() {
