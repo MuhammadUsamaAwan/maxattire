@@ -4,17 +4,18 @@ import { unstable_cache } from 'next/cache';
 import { siteConfig } from '~/config/site';
 import { auth } from '~/lib/auth';
 import { getCategories } from '~/lib/fetchers/categories';
+import { getLinks } from '~/lib/fetchers/settings';
+import { getStores } from '~/lib/fetchers/stores';
 import { fontSans } from '~/lib/fonts';
 import { absoluteUrl, cn } from '~/lib/utils';
 import { Toaster } from '~/components/ui/toaster';
 import { TooltipProvider } from '~/components/ui/tooltip';
+import { SiteFooter } from '~/components/layouts/site-footer';
 import { SiteHeader } from '~/components/layouts/site-header';
 import { TailwindIndicator } from '~/components/layouts/tailwind-indicator';
 import { ThemeProvider } from '~/components/layouts/theme-provider';
 
 import '~/styles/globals.css';
-
-import { getStores } from '~/lib/fetchers/stores';
 
 export const metadata: Metadata = {
   metadataBase: new URL(absoluteUrl()),
@@ -37,7 +38,8 @@ const getCachedData = unstable_cache(
   async () => {
     const categoriesPromise = getCategories();
     const storesPromise = getStores();
-    return Promise.all([categoriesPromise, storesPromise]);
+    const linksPromise = getLinks();
+    return Promise.all([categoriesPromise, storesPromise, linksPromise]);
   },
   [],
   {
@@ -48,7 +50,7 @@ const getCachedData = unstable_cache(
 export default async function RootLayout({ children }: React.PropsWithChildren) {
   const dataPromise = getCachedData();
   const sessionPromise = auth();
-  const [[categories, stores], session] = await Promise.all([dataPromise, sessionPromise]);
+  const [[categories, stores, links], session] = await Promise.all([dataPromise, sessionPromise]);
 
   return (
     <html lang='en' suppressHydrationWarning>
@@ -57,6 +59,7 @@ export default async function RootLayout({ children }: React.PropsWithChildren) 
           <TooltipProvider delayDuration={500}>
             <SiteHeader categories={categories} session={session} stores={stores} />
             <main className='flex-1'>{children}</main>
+            <SiteFooter categories={categories} links={links} />
             <TailwindIndicator />
           </TooltipProvider>
           <Toaster />

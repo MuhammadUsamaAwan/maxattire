@@ -68,7 +68,7 @@ const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWit
           <Link
             ref={ref}
             href={String(href)}
-            className={cn('text-sm hover:underline focus:underline', className)}
+            className={cn('text-sm hover:text-primary focus:text-primary', className)}
             {...props}
           >
             {title}

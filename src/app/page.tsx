@@ -18,7 +18,7 @@ export default async function HomePage() {
   ]);
 
   return (
-    <div className='pb-20'>
+    <>
       <Hero />
       <Brands />
       <ProductsSection
@@ -35,6 +35,6 @@ export default async function HomePage() {
         className='bg-accent'
       />
       <ProductsSection products={wholeSaleProducts} title='Wholesale Products' description='Our wholesale products' />
-    </div>
+    </>
   );
 }

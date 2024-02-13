@@ -18,6 +18,8 @@ import {
 } from '@radix-ui/react-icons';
 import { ShoppingCart } from 'lucide-react';
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
+import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
 
 export const Icons = {
   arrowLeft: ArrowLeftIcon,
@@ -40,4 +42,8 @@ export const Icons = {
   star: BsStar,
   starFill: BsStarFill,
   starHalf: BsStarHalf,
+  facebook: FaFacebook,
+  linkedin: FaLinkedin,
+  twitter: FaXTwitter,
+  instagram: FaInstagram,
 };
