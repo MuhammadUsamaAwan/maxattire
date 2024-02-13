@@ -8,7 +8,6 @@ import { ViewVerticalIcon } from '@radix-ui/react-icons';
 
 import { siteConfig } from '~/config/site';
 import { type Categories } from '~/lib/fetchers/categories';
-import { type Stores } from '~/lib/fetchers/stores';
 import { cn } from '~/lib/utils';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion';
 import { Button } from '~/components/ui/button';
@@ -17,10 +16,9 @@ import { Sheet, SheetContent, SheetTrigger } from '~/components/ui/sheet';
 
 type MobileNavProps = {
   categories: Categories;
-  stores: Stores;
 };
 
-export function MobileNav({ categories, stores }: MobileNavProps) {
+export function MobileNav({ categories }: MobileNavProps) {
   const segment = useSelectedLayoutSegment();
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -61,10 +59,9 @@ export function MobileNav({ categories, stores }: MobileNavProps) {
                         </MobileLink>
                       ))}
                       <div className='space-y-2'>
-                        {stores.map(store => (
+                        {category.storeCategories.map(({ store }) => (
                           <Link key={store.slug} href={`/stores/${store.slug}`} className='block w-max border p-5'>
-                            {/* TODO: check why next image is not working */}
-                            <img src={store.logo ?? ''} alt={store.slug} width={86} height={38} />
+                            <Image src={store.logo ?? ''} alt={store.slug} width={86} height={38} />
                           </Link>
                         ))}
                       </div>

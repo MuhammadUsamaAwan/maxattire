@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from 'next';
+import { unstable_cache } from 'next/cache';
 
 import { siteConfig } from '~/config/site';
+import { auth } from '~/lib/auth';
+import { getCategories } from '~/lib/fetchers/categories';
 import { fontSans } from '~/lib/fonts';
 import { absoluteUrl, cn } from '~/lib/utils';
 import { Toaster } from '~/components/ui/toaster';
@@ -28,13 +31,28 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: React.PropsWithChildren) {
+const getCachedData = unstable_cache(
+  async () => {
+    const categoriesPromise = getCategories();
+    return Promise.all([categoriesPromise]);
+  },
+  [],
+  {
+    revalidate: 60 * 15, // 15 minute
+  }
+);
+
+export default async function RootLayout({ children }: React.PropsWithChildren) {
+  const dataPromise = getCachedData();
+  const sessionPromise = auth();
+  const [[categories], session] = await Promise.all([dataPromise, sessionPromise]);
+
   return (
     <html lang='en' suppressHydrationWarning>
       <body className={cn('flex min-h-dvh flex-col font-sans antialiased', fontSans.variable)}>
         <ThemeProvider attribute='class' defaultTheme='light' enableSystem disableTransitionOnChange>
           <TooltipProvider>
-            <SiteHeader />
+            <SiteHeader categories={categories} session={session} />
             <main className='flex-1'>{children}</main>
             <TailwindIndicator />
           </TooltipProvider>

@@ -8,8 +8,11 @@ import {
   ChevronRightIcon,
   ChevronUpIcon,
   Cross2Icon,
+  DashboardIcon,
   DotFilledIcon,
   DotsHorizontalIcon,
+  ExitIcon,
+  GearIcon,
   MagnifyingGlassIcon,
 } from '@radix-ui/react-icons';
 import { ShoppingCart } from 'lucide-react';
@@ -24,8 +27,11 @@ export const Icons = {
   chevronRight: ChevronRightIcon,
   chevronUp: ChevronUpIcon,
   cross: Cross2Icon,
+  dashboard: DashboardIcon,
   dot: DotFilledIcon,
   dotsHorizontal: DotsHorizontalIcon,
+  logout: ExitIcon,
+  settings: GearIcon,
   search: MagnifyingGlassIcon,
   cart: ShoppingCart,
 };

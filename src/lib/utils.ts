@@ -41,3 +41,12 @@ export function formatPrice(
     notation,
   }).format(Number(price));
 }
+
+export function getInitials(name: string | null | undefined) {
+  return (
+    name
+      ?.split(' ')
+      .map(n => n[0])
+      .join('') ?? ''
+  );
+}
