@@ -17,6 +17,7 @@ import {
   MagnifyingGlassIcon,
 } from '@radix-ui/react-icons';
 import { ShoppingCart } from 'lucide-react';
+import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
 
 export const Icons = {
   arrowLeft: ArrowLeftIcon,
@@ -36,4 +37,7 @@ export const Icons = {
   placeholder: ImageIcon,
   search: MagnifyingGlassIcon,
   cart: ShoppingCart,
+  star: BsStar,
+  starFill: BsStarFill,
+  starHalf: BsStarHalf,
 };

@@ -982,6 +982,7 @@ export const categoriesRelations = relations(categories, ({ one, many }) => ({
 
 export const productsRelations = relations(products, ({ many }) => ({
   productStocks: many(productStocks),
+  reviews: many(reviews),
 }));
 
 export const productStockRelations = relations(productStocks, ({ one }) => ({
@@ -997,4 +998,11 @@ export const productStockRelations = relations(productStocks, ({ one }) => ({
 
 export const colorsRelations = relations(colors, ({ many }) => ({
   productStocks: many(productStocks),
+}));
+
+export const reviewsRelations = relations(reviews, ({ one }) => ({
+  product: one(products, {
+    fields: [reviews.productId],
+    references: [products.id],
+  }),
 }));

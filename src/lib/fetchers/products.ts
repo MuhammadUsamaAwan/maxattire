@@ -27,6 +27,11 @@ export async function getNewProducts() {
           },
         },
       },
+      reviews: {
+        columns: {
+          rating: true,
+        },
+      },
     },
     limit: 8,
   });

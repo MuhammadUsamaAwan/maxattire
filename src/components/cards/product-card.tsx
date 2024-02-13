@@ -11,6 +11,7 @@ import { formatPrice } from '~/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger } from '~/components/ui/tooltip';
 import { PlaceholderImage } from '~/components/placeholder-image';
+import { Rating } from '~/components/rating';
 
 type ProductCard = {
   product: Products[number];
@@ -20,6 +21,12 @@ export function ProductCard({ product }: ProductCard) {
   const colors = React.useMemo(() => {
     const allColors = product.productStocks.map(stock => stock.color);
     return uniqBy(allColors, 'title');
+  }, [product]);
+
+  const rating = React.useMemo(() => {
+    if (product.reviews.length === 0) return 0;
+    const sum = product.reviews.reduce((acc, review) => acc + (review.rating ?? 0), 0);
+    return sum / product.reviews.length;
   }, [product]);
 
   return (
@@ -50,6 +57,10 @@ export function ProductCard({ product }: ProductCard) {
           ) : (
             <div className='line-clamp-1'>{formatPrice(product.sellPrice ?? 0)}</div>
           )}
+        </div>
+        <div className='flex items-center gap-1'>
+          <Rating rating={rating} />
+          <div className='text-muted-foreground'>({product.reviews.length})</div>
         </div>
         <div className='flex items-center justify-between'>
           <div>{colors.length} Colors</div>
