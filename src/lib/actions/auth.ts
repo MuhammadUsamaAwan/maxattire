@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '~/db';
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 import { and, eq, isNull } from 'drizzle-orm';
 import { type z } from 'zod';
 
@@ -23,9 +23,10 @@ export async function signInWithCredentials(rawInput: z.infer<typeof authSchema>
     throw new Error('Invalid email or password');
   }
   const valid = await compare(password, user.password);
-  //   if (!valid) {
-  //     throw new Error('Invalid email or password');
-  //   }
+  if (!valid) {
+    throw new Error('Invalid email or password');
+  }
+  // TODO: email verification
   //   if (!user.emailVerifiedAt) {
   //     throw new Error('Email is not verified');
   //   }
