@@ -3,8 +3,9 @@ import Link from 'next/link';
 
 import { getCategories } from '~/lib/fetchers/categories';
 import { getColors } from '~/lib/fetchers/colors';
-import { getSizes } from '~/lib/fetchers/sizes';
+import { getFilteredSizes } from '~/lib/fetchers/sizes';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion';
+import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Input } from '~/components/ui/input';
@@ -13,13 +14,13 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '~/components/ui/tooltip
 const getCachedData = unstable_cache(
   async () => {
     const categoriesPromise = getCategories();
-    const sizesPromise = getSizes();
+    const sizesPromise = getFilteredSizes();
     const colorsPromise = getColors();
     return Promise.all([categoriesPromise, sizesPromise, colorsPromise]);
   },
   [],
   {
-    revalidate: 60, // 1 minute
+    revalidate: 1, // 1 minute
   }
 );
 
@@ -57,7 +58,12 @@ export async function CategoryFilters() {
           {sizes.map(size => (
             <div key={size.slug} className='flex items-center space-x-2'>
               <Checkbox id={size.slug} />
-              <label htmlFor={size.slug}>{size.title}</label>
+              <label htmlFor={size.slug}>
+                {size.slug}
+                <Badge variant='outline' className='ml-2 font-normal'>
+                  {size.productCount}
+                </Badge>
+              </label>
             </div>
           ))}
         </AccordionContent>

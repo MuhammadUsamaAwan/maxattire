@@ -973,6 +973,7 @@ export const categoriesRelations = relations(categories, ({ one, many }) => ({
   children: many(categories, {
     relationName: 'category_children',
   }),
+  products: many(products),
   parent: one(categories, {
     fields: [categories.parentId],
     references: [categories.id],
@@ -982,7 +983,19 @@ export const categoriesRelations = relations(categories, ({ one, many }) => ({
 
 export const productsRelations = relations(products, ({ many }) => ({
   productStocks: many(productStocks),
+  categories: many(categories),
   reviews: many(reviews),
+}));
+
+export const productCategoriesRelations = relations(productCategories, ({ one }) => ({
+  product: one(products, {
+    fields: [productCategories.productId],
+    references: [products.id],
+  }),
+  category: one(categories, {
+    fields: [productCategories.categoryId],
+    references: [categories.id],
+  }),
 }));
 
 export const productStockRelations = relations(productStocks, ({ one }) => ({
@@ -997,6 +1010,10 @@ export const productStockRelations = relations(productStocks, ({ one }) => ({
 }));
 
 export const colorsRelations = relations(colors, ({ many }) => ({
+  productStocks: many(productStocks),
+}));
+
+export const sizeRelations = relations(sizes, ({ many }) => ({
   productStocks: many(productStocks),
 }));
 
