@@ -3,7 +3,6 @@
 import { db } from '~/db';
 import type { ActiveFilters } from '~/types';
 import { and, count, eq, gt, inArray, isNull, lt } from 'drizzle-orm';
-import { groupBy } from 'lodash';
 import { arrayToTree } from 'performant-array-to-tree';
 
 import { categories, colors, productCategories, products, productStocks, sizes } from '~/db/schema';
@@ -96,10 +95,12 @@ export async function getFilteredCategories(filter?: ActiveFilters) {
       )
     )
     .groupBy(categories.id, categories.slug, categories.title, categories.parentId);
-  console.log('filteredCategories', filteredCategories);
   const nestedCategories = arrayToTree(filteredCategories, {
     dataField: null,
   }) as FilteredCategory[];
-  console.log('nestedCategories', nestedCategories);
-  return nestedCategories;
+  const aggregatedCategories = nestedCategories.map(category => {
+    category.productCount = category.children?.reduce((acc, child) => acc + child.productCount, 0) ?? 0;
+    return category;
+  });
+  return aggregatedCategories;
 }
