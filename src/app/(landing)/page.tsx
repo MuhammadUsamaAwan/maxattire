@@ -1,21 +1,27 @@
+import { unstable_cache } from 'next/cache';
+
 import { getFeaturedProducts, getNewProducts, getTopProducts, getWholeSaleProducts } from '~/lib/fetchers/products';
 
 import { Brands } from './_components/brands';
 import { Hero } from './_components/hero';
 import { ProductsSection } from './_components/products-section';
 
-export default async function HomePage() {
-  const newProductsPromise = getNewProducts();
-  const topProductsPromise = getTopProducts();
-  const featuredProductsPromise = getFeaturedProducts();
-  const wholeSaleProductsPromise = getWholeSaleProducts();
+const getCachedData = unstable_cache(
+  async () => {
+    const newProductsPromise = getNewProducts();
+    const topProductsPromise = getTopProducts();
+    const featuredProductsPromise = getFeaturedProducts();
+    const wholeSaleProductsPromise = getWholeSaleProducts();
+    return Promise.all([newProductsPromise, topProductsPromise, featuredProductsPromise, wholeSaleProductsPromise]);
+  },
+  [],
+  {
+    revalidate: 60, // 1 minute
+  }
+);
 
-  const [newProducts, topProducts, featuredProducts, wholeSaleProducts] = await Promise.all([
-    newProductsPromise,
-    topProductsPromise,
-    featuredProductsPromise,
-    wholeSaleProductsPromise,
-  ]);
+export default async function HomePage() {
+  const [newProducts, topProducts, featuredProducts, wholeSaleProducts] = await getCachedData();
 
   return (
     <>
