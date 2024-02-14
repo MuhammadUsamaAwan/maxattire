@@ -1,6 +1,7 @@
 import type { CategoriesSearchParams } from '~/types';
 
 import { CategoryFilters } from '../_components/category-filters';
+import { CategoryProducts } from '../_components/category-products';
 
 export type CategoryPageProps = {
   params: {
@@ -14,7 +15,9 @@ export default function CategoryPage({ searchParams, params: { categorySlug } }:
     <div className='container pb-8 pt-6 md:py-8'>
       <div className='mb-8 space-y-1'>
         <div className='flex flex-col gap-6 lg:flex-row lg:gap-10'>
-          <CategoryFilters category={categorySlug} searchParams={searchParams} />
+          <div className='w-full lg:w-80'>
+            <CategoryFilters category={categorySlug} searchParams={searchParams} />
+          </div>
           <div className='flex-1'>
             <div className='mb-6 space-y-1'>
               <h1 className='text-center text-3xl font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]'>
@@ -24,7 +27,9 @@ export default function CategoryPage({ searchParams, params: { categorySlug } }:
                 Personalize apparel with free & fast shipping
               </p>
             </div>
-            content
+            <div className='flex-1 sm:mt-1.5'>
+              <CategoryProducts category={categorySlug} searchParams={searchParams} />
+            </div>
           </div>
         </div>
       </div>

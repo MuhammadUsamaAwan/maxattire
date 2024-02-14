@@ -47,7 +47,7 @@ export function MainNav({ categories, stores }: MainNavProps) {
                   <div className='text-sm font-semibold'>Featured Brands</div>
                   <div className='grid grid-cols-4 border-[0.5px] md:w-[400px] lg:w-[500px]'>
                     {stores.map(store => (
-                      <Link key={store.slug} href={`/stores/${store.slug}`} className='block border-[0.5px] p-5'>
+                      <Link key={store.slug} href={`/brands/${store.slug}`} className='block border-[0.5px] p-5'>
                         <Image src={store.logo ?? ''} alt={store.slug} width={86} height={38} />
                       </Link>
                     ))}

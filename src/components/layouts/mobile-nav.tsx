@@ -64,7 +64,7 @@ export function MobileNav({ categories, stores }: MobileNavProps) {
                       ))}
                       <div className='space-y-2'>
                         {stores.map(store => (
-                          <Link key={store.slug} href={`/stores/${store.slug}`} className='block w-max border p-5'>
+                          <Link key={store.slug} href={`/brands/${store.slug}`} className='block w-max border p-5'>
                             <Image src={store.logo ?? ''} alt={store.slug} width={86} height={38} />
                           </Link>
                         ))}

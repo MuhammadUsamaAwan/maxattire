@@ -63,7 +63,7 @@ export async function CategoryFilters({ category, searchParams }: CategoryFilter
   const selectedColors = searchParams.colors?.split(',') ?? [];
 
   return (
-    <Accordion type='multiple' className='w-full lg:w-80'>
+    <Accordion type='multiple'>
       <AccordionItem key='categories' value='categories'>
         <AccordionTrigger>Categories</AccordionTrigger>
         <AccordionContent className='flex flex-col space-y-2 p-4 pt-0'>
