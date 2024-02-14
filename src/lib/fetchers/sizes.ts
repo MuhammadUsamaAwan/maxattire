@@ -26,16 +26,6 @@ export async function getFilteredSizes(filter?: ActiveFilters) {
         })
         .then(colors => colors.map(color => color.id))
     : undefined;
-  const sizesIdsPromise = filter?.sizes
-    ? db.query.sizes
-        .findMany({
-          where: inArray(sizes.slug, filter.sizes),
-          columns: {
-            id: true,
-          },
-        })
-        .then(sizes => sizes.map(size => size.id))
-    : undefined;
   const categoryPromise = filter?.category
     ? db.query.categories.findFirst({
         where: eq(categories.slug, filter.category),
@@ -44,7 +34,7 @@ export async function getFilteredSizes(filter?: ActiveFilters) {
         },
       })
     : undefined;
-  const [colorsIds, sizesIds, category] = await Promise.all([colorsIdsPromise, sizesIdsPromise, categoryPromise]);
+  const [colorsIds, category] = await Promise.all([colorsIdsPromise, categoryPromise]);
   const shouldProductFilter = filter?.minPrice || filter?.maxPrice || category;
   const productsIds = shouldProductFilter
     ? await db
@@ -77,7 +67,6 @@ export async function getFilteredSizes(filter?: ActiveFilters) {
         productsIds && inArray(productStocks.productId, productsIds)
       )
     )
-    .where(sizesIds && inArray(sizes.id, sizesIds))
     .groupBy(sizes.slug, sizes.title);
   return filteredSizes;
 }

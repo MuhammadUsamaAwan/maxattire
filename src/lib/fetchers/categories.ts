@@ -99,7 +99,7 @@ export async function getFilteredCategories(filter?: ActiveFilters) {
     dataField: null,
   }) as FilteredCategory[];
   const aggregatedCategories = nestedCategories.map(category => {
-    category.productCount = category.children?.reduce((acc, child) => acc + child.productCount, 0) ?? 0;
+    category.productCount = category.children?.reduce((acc, child) => acc + child.productCount, 0) || 0;
     return category;
   });
   return aggregatedCategories;
