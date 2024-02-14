@@ -106,8 +106,9 @@ export async function CategoryFilters({ category, searchParams }: CategoryFilter
                           selectedSizes.filter(s => s !== size.slug).length > 0
                             ? selectedSizes.filter(s => s !== size.slug).join(',')
                             : undefined,
+                        page: undefined,
                       })
-                    : getSearchParams(searchParams, { sizes: [...selectedSizes, size.slug].join(',') })
+                    : getSearchParams(searchParams, { sizes: [...selectedSizes, size.slug].join(','), page: undefined })
                 }
                 className='flex items-center space-x-2'
               >
@@ -136,8 +137,12 @@ export async function CategoryFilters({ category, searchParams }: CategoryFilter
                               selectedColors.filter(s => s !== color.slug).length > 0
                                 ? selectedColors.filter(s => s !== color.slug).join(',')
                                 : undefined,
+                            page: undefined,
                           })
-                        : getSearchParams(searchParams, { colors: [...selectedColors, color.slug].join(',') })
+                        : getSearchParams(searchParams, {
+                            colors: [...selectedColors, color.slug].join(','),
+                            page: undefined,
+                          })
                     }
                     className='flex items-center space-x-2'
                   >

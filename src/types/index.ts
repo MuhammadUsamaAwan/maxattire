@@ -4,6 +4,8 @@ export type ActiveFilters = {
   category?: string;
   minPrice?: number;
   maxPrice?: number;
+  sort?: string;
+  page?: number;
 };
 
 export type CategoriesSearchParams = {
