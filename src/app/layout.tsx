@@ -43,7 +43,7 @@ const getCachedData = unstable_cache(
   },
   [],
   {
-    revalidate: 60, // 1 minute
+    revalidate: 1, // 1 minute
   }
 );
 

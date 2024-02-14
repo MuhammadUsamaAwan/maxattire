@@ -185,8 +185,8 @@ export async function getFilteredProducts(filter?: ActiveFilters) {
       id: products.id,
     })
     .from(products)
-    .innerJoin(productCategories, eq(products.id, productCategories.productId))
-    .innerJoin(productStocks, eq(products.id, productStocks.productId))
+    .leftJoin(productCategories, eq(products.id, productCategories.productId))
+    .leftJoin(productStocks, eq(products.id, productStocks.productId))
     .where(
       and(
         filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
@@ -196,6 +196,7 @@ export async function getFilteredProducts(filter?: ActiveFilters) {
         colorsIds && inArray(productStocks.colorId, colorsIds)
       )
     )
+    .groupBy(products.id)
     .then(products => products.map(product => product.id));
   const productsResult = await db.query.products.findMany({
     columns: {

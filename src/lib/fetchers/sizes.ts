@@ -35,7 +35,7 @@ export async function getFilteredSizes(filter?: ActiveFilters) {
       })
     : undefined;
   const [colorsIds, category] = await Promise.all([colorsIdsPromise, categoryPromise]);
-  const shouldProductFilter = filter?.minPrice || filter?.maxPrice || category;
+  const shouldProductFilter = filter?.minPrice || filter?.maxPrice || category || colorsIds;
   const productsIds = shouldProductFilter
     ? await db
         .select({
@@ -47,9 +47,11 @@ export async function getFilteredSizes(filter?: ActiveFilters) {
           and(
             filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
             filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
-            category && eq(productCategories.categoryId, category.id)
+            category && eq(productCategories.categoryId, category.id),
+            colorsIds && inArray(productStocks.colorId, colorsIds)
           )
         )
+        .groupBy(products.id)
         .then(products => products.map(product => product.id))
     : undefined;
   const filteredSizes = await db

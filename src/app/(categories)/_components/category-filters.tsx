@@ -32,7 +32,7 @@ const getCachedData = unstable_cache(
   },
   [],
   {
-    revalidate: 60, // 1 minute
+    revalidate: 1, // 1 minute
   }
 );
 
@@ -71,7 +71,7 @@ export async function CategoryFilters({ category, searchParams }: CategoryFilter
             {categories?.map(category => (
               <AccordionItem key={category.slug} value={category.slug}>
                 <AccordionTrigger>
-                  <Link href={category.slug} className='hover:text-primary'>
+                  <Link href={category.slug + getSearchParams(searchParams, {})} className='hover:text-primary'>
                     {category.title}
                     <Badge variant='outline' className='ml-2 font-normal'>
                       {category.productCount}
@@ -80,7 +80,11 @@ export async function CategoryFilters({ category, searchParams }: CategoryFilter
                 </AccordionTrigger>
                 <AccordionContent className='flex flex-col space-y-2'>
                   {category.children?.map(child => (
-                    <Link key={child.slug} href={child.slug} className='hover:text-primary'>
+                    <Link
+                      key={child.slug}
+                      href={child.slug + getSearchParams(searchParams, {})}
+                      className='hover:text-primary'
+                    >
                       {child.title}
                       <Badge variant='outline' className='ml-2 font-normal'>
                         {child.productCount}

@@ -76,6 +76,7 @@ export async function getFilteredCategories(filter?: ActiveFilters) {
             colorsIds && inArray(productStocks.colorId, colorsIds)
           )
         )
+        .groupBy(products.id)
         .then(products => products.map(product => product.id))
     : undefined;
   const filteredCategories = await db
@@ -98,9 +99,5 @@ export async function getFilteredCategories(filter?: ActiveFilters) {
   const nestedCategories = arrayToTree(filteredCategories, {
     dataField: null,
   }) as FilteredCategory[];
-  const aggregatedCategories = nestedCategories.map(category => {
-    category.productCount = category.children?.reduce((acc, child) => acc + child.productCount, 0) || 0;
-    return category;
-  });
-  return aggregatedCategories;
+  return nestedCategories;
 }

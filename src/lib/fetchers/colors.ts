@@ -51,6 +51,7 @@ export async function getFilteredColors(filter?: ActiveFilters) {
             category && eq(productCategories.categoryId, category.id)
           )
         )
+        .groupBy(products.id)
         .then(products => products.map(product => product.id))
     : undefined;
   const filteredColors = await db
