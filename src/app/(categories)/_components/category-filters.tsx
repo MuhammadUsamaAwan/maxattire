@@ -1,8 +1,8 @@
 import { unstable_cache } from 'next/cache';
 import Link from 'next/link';
 
-import { getCategories } from '~/lib/fetchers/categories';
-import { getColors } from '~/lib/fetchers/colors';
+import { getFilteredCategories } from '~/lib/fetchers/categories';
+import { getFilteredColors } from '~/lib/fetchers/colors';
 import { getFilteredSizes } from '~/lib/fetchers/sizes';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion';
 import { Badge } from '~/components/ui/badge';
@@ -13,9 +13,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '~/components/ui/tooltip
 
 const getCachedData = unstable_cache(
   async () => {
-    const categoriesPromise = getCategories();
-    const sizesPromise = getFilteredSizes();
-    const colorsPromise = getColors();
+    const categoriesPromise = getFilteredCategories({ colors: ['black'], category: 'men' });
+    const sizesPromise = getFilteredSizes({ colors: ['black'], category: 'men' });
+    const colorsPromise = getFilteredColors({ colors: ['black'], category: 'men' });
     return Promise.all([categoriesPromise, sizesPromise, colorsPromise]);
   },
   [],
@@ -38,12 +38,18 @@ export async function CategoryFilters() {
                 <AccordionTrigger>
                   <Link href={category.slug} className='hover:text-primary'>
                     {category.title}
+                    <Badge variant='outline' className='ml-2 font-normal'>
+                      {category.productCount}
+                    </Badge>
                   </Link>
                 </AccordionTrigger>
                 <AccordionContent className='flex flex-col space-y-2'>
                   {category.children?.map(child => (
                     <Link key={child.slug} href={`/${category.slug}/${child.slug}`} className='hover:text-primary'>
-                      {child.title}
+                      {child.title}{' '}
+                      <Badge variant='outline' className='ml-2 font-normal'>
+                        {child.productCount}
+                      </Badge>
                     </Link>
                   ))}
                 </AccordionContent>
@@ -70,18 +76,23 @@ export async function CategoryFilters() {
       </AccordionItem>
       <AccordionItem value='colors'>
         <AccordionTrigger>Colors</AccordionTrigger>
-        <AccordionContent className='grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(2rem,2rem))]'>
+        <AccordionContent className='grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(6rem,6rem))]'>
           {colors.map(color => (
             <Tooltip key={color?.code}>
               <TooltipTrigger asChild>
-                <Checkbox
-                  title={color.title ?? ''}
-                  key={color.slug}
-                  className='size-8 rounded-full border-0'
-                  style={{
-                    backgroundColor: `#${color.code}` ?? '',
-                  }}
-                />
+                <div className='flex items-center'>
+                  <Checkbox
+                    title={color.title ?? ''}
+                    key={color.slug}
+                    className='size-8 rounded-full border-0'
+                    style={{
+                      backgroundColor: `#${color.code}` ?? '',
+                    }}
+                  ></Checkbox>
+                  <Badge variant='outline' className='ml-2 font-normal'>
+                    {color.productCount}
+                  </Badge>
+                </div>
               </TooltipTrigger>
               <TooltipContent>
                 <div>{color?.title}</div>
@@ -92,19 +103,17 @@ export async function CategoryFilters() {
       </AccordionItem>
       <AccordionItem value='price'>
         <AccordionTrigger>Price</AccordionTrigger>
-        <AccordionContent>
-          <div className='flex items-center space-x-2'>
-            <Input id='max-price' type='number' inputMode='numeric' placeholder='Min' min={0} />
-            <label className='sr-only' htmlFor='"max-price'>
-              Min Price
-            </label>
-            <span>-</span>
-            <Input id='min-price' type='number' inputMode='numeric' placeholder='Max' min={0} />
-            <label className='sr-only' htmlFor='min-price'>
-              Max Price
-            </label>
-            <Button>Apply</Button>
-          </div>
+        <AccordionContent className='flex items-center space-x-2 px-1 pt-1'>
+          <Input id='max-price' type='number' inputMode='numeric' placeholder='Min' min={0} />
+          <label className='sr-only' htmlFor='"max-price'>
+            Min Price
+          </label>
+          <span>-</span>
+          <Input id='min-price' type='number' inputMode='numeric' placeholder='Max' min={0} />
+          <label className='sr-only' htmlFor='min-price'>
+            Max Price
+          </label>
+          <Button>Apply</Button>
         </AccordionContent>
       </AccordionItem>
     </Accordion>

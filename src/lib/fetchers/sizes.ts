@@ -47,22 +47,19 @@ export async function getFilteredSizes(filter?: ActiveFilters) {
   const [colorsIds, sizesIds, category] = await Promise.all([colorsIdsPromise, sizesIdsPromise, categoryPromise]);
   const shouldProductFilter = filter?.minPrice || filter?.maxPrice || category;
   const productsIds = shouldProductFilter
-    ? await db.query.products
-        .findMany({
-          where: and(
+    ? await db
+        .select({
+          id: products.id,
+        })
+        .from(products)
+        .innerJoin(productCategories, eq(products.id, productCategories.productId))
+        .where(
+          and(
             filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
             filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
             category && eq(productCategories.categoryId, category.id)
-          ),
-          columns: {
-            id: true,
-          },
-          with: {
-            categories: {
-              columns: {},
-            },
-          },
-        })
+          )
+        )
         .then(products => products.map(product => product.id))
     : undefined;
   const filteredSizes = await db

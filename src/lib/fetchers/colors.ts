@@ -1,6 +1,10 @@
 'use server';
 
 import { db } from '~/db';
+import type { ActiveFilters } from '~/types';
+import { and, count, eq, gt, inArray, lt } from 'drizzle-orm';
+
+import { categories, colors, productCategories, products, productStocks, sizes } from '~/db/schema';
 
 export async function getColors() {
   return db.query.colors.findMany({
@@ -12,4 +16,70 @@ export async function getColors() {
   });
 }
 
-export type Colors = Awaited<ReturnType<typeof getColors>>;
+export async function getFilteredColors(filter?: ActiveFilters) {
+  const colorsIdsPromise = filter?.colors
+    ? db.query.colors
+        .findMany({
+          where: inArray(colors.slug, filter.colors),
+          columns: {
+            id: true,
+          },
+        })
+        .then(colors => colors.map(color => color.id))
+    : undefined;
+  const sizesIdsPromise = filter?.sizes
+    ? db.query.sizes
+        .findMany({
+          where: inArray(sizes.slug, filter.sizes),
+          columns: {
+            id: true,
+          },
+        })
+        .then(sizes => sizes.map(size => size.id))
+    : undefined;
+  const categoryPromise = filter?.category
+    ? db.query.categories.findFirst({
+        where: eq(categories.slug, filter.category),
+        columns: {
+          id: true,
+        },
+      })
+    : undefined;
+  const [colorsIds, sizesIds, category] = await Promise.all([colorsIdsPromise, sizesIdsPromise, categoryPromise]);
+  const shouldProductFilter = filter?.minPrice || filter?.maxPrice || category;
+  const productsIds = shouldProductFilter
+    ? await db
+        .select({
+          id: products.id,
+        })
+        .from(products)
+        .innerJoin(productCategories, eq(products.id, productCategories.productId))
+        .where(
+          and(
+            filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
+            filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
+            category && eq(productCategories.categoryId, category.id)
+          )
+        )
+        .then(products => products.map(product => product.id))
+    : undefined;
+  const filteredColors = await db
+    .select({
+      slug: colors.slug,
+      title: colors.title,
+      code: colors.code,
+      productCount: count(productStocks.productId),
+    })
+    .from(colors)
+    .innerJoin(
+      productStocks,
+      and(
+        eq(colors.id, productStocks.sizeId),
+        sizesIds && inArray(productStocks.colorId, sizesIds),
+        productsIds && inArray(productStocks.productId, productsIds)
+      )
+    )
+    .where(colorsIds && inArray(colors.id, colorsIds))
+    .groupBy(colors.slug, colors.title, colors.code);
+  return filteredColors;
+}
