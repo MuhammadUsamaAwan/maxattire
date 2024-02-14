@@ -2,7 +2,7 @@
 
 import { db } from '~/db';
 import type { ActiveFilters } from '~/types';
-import { and, count, eq, gt, inArray, lt } from 'drizzle-orm';
+import { and, countDistinct, eq, gt, inArray, lt } from 'drizzle-orm';
 
 import { categories, colors, productCategories, products, productStocks, sizes } from '~/db/schema';
 
@@ -35,30 +35,26 @@ export async function getFilteredSizes(filter?: ActiveFilters) {
       })
     : undefined;
   const [colorsIds, category] = await Promise.all([colorsIdsPromise, categoryPromise]);
-  const shouldProductFilter = filter?.minPrice || filter?.maxPrice || category || colorsIds;
-  const productsIds = shouldProductFilter
-    ? await db
-        .select({
-          id: products.id,
-        })
-        .from(products)
-        .innerJoin(productCategories, eq(products.id, productCategories.productId))
-        .where(
-          and(
-            filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
-            filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
-            category && eq(productCategories.categoryId, category.id),
-            colorsIds && inArray(productStocks.colorId, colorsIds)
-          )
-        )
-        .groupBy(products.id)
-        .then(products => products.map(product => product.id))
-    : undefined;
+  const productsIds = await db
+    .select({
+      id: products.id,
+    })
+    .from(products)
+    .innerJoin(productCategories, eq(products.id, productCategories.productId))
+    .where(
+      and(
+        filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
+        filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
+        category && eq(productCategories.categoryId, category.id)
+      )
+    )
+    .groupBy(products.id)
+    .then(products => products.map(product => product.id));
   const filteredSizes = await db
     .select({
       slug: sizes.slug,
       title: sizes.title,
-      productCount: count(productStocks.productId),
+      productCount: countDistinct(productStocks.productId),
     })
     .from(sizes)
     .innerJoin(
@@ -69,6 +65,6 @@ export async function getFilteredSizes(filter?: ActiveFilters) {
         productsIds && inArray(productStocks.productId, productsIds)
       )
     )
-    .groupBy(sizes.slug, sizes.title);
+    .groupBy(sizes.id, sizes.slug, sizes.title);
   return filteredSizes;
 }

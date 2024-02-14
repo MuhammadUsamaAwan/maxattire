@@ -63,13 +63,13 @@ export function ProductCard({ product }: ProductCard) {
           <div className='text-muted-foreground'>({product.reviews.length})</div>
         </div>
         <div className='flex items-center justify-between'>
-          <div>{colors.length} Colors</div>
+          <div className='text-sm text-muted-foreground'>{colors.length} Colors</div>
           <div className='flex items-start gap-2'>
             {colors.slice(0, 7).map(color => (
               <Tooltip key={color?.code}>
                 <TooltipTrigger asChild>
                   <div
-                    className='size-5 cursor-pointer rounded-full duration-150 hover:scale-110'
+                    className='size-5 cursor-pointer rounded-full border border-border duration-150 hover:scale-110'
                     style={{
                       backgroundColor: `#${color?.code}`,
                     }}

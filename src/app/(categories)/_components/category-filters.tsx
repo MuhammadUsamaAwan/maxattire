@@ -22,6 +22,8 @@ const getCachedData = unstable_cache(
         category,
         minPrice: searchParams.min_price ? Number(searchParams.min_price) : undefined,
         maxPrice: searchParams.max_price ? Number(searchParams.max_price) : undefined,
+        sort: searchParams.sort,
+        page: searchParams.page ? Number(searchParams.page) : undefined,
       },
       isUndefined
     ) as ActiveFilters;
@@ -117,7 +119,7 @@ export async function CategoryFilters({ category, searchParams }: CategoryFilter
                 className='flex items-center space-x-2'
               >
                 <Checkbox id={size.slug} checked={selectedSizes.includes(size.slug)} />
-                <label htmlFor={size.slug}>{size.slug}</label>
+                <label htmlFor={size.slug}>{size.title}</label>
               </Link>
               <Badge variant='outline' className='ml-2 font-normal'>
                 {size.productCount}
@@ -130,9 +132,9 @@ export async function CategoryFilters({ category, searchParams }: CategoryFilter
         <AccordionTrigger>Colors</AccordionTrigger>
         <AccordionContent className='grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(6rem,6rem))]'>
           {colors.map(color => (
-            <Tooltip key={color?.code}>
-              <TooltipTrigger asChild>
-                <div className='flex items-center'>
+            <div key={color?.code} className='flex items-center'>
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <Link
                     href={
                       selectedColors.includes(color.slug)
@@ -153,21 +155,22 @@ export async function CategoryFilters({ category, searchParams }: CategoryFilter
                     <Checkbox
                       title={color.title ?? ''}
                       key={color.slug}
-                      className='size-8 rounded-full border-0'
+                      className='size-8 rounded-full border border-border'
                       style={{
                         backgroundColor: `#${color.code}` ?? '',
                       }}
+                      checked={selectedColors.includes(color.slug)}
                     ></Checkbox>
                   </Link>
-                  <Badge variant='outline' className='ml-2 font-normal'>
-                    {color.productCount}
-                  </Badge>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <div>{color?.title}</div>
-              </TooltipContent>
-            </Tooltip>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div>{color.title}</div>
+                </TooltipContent>
+              </Tooltip>
+              <Badge variant='outline' className='ml-2 font-normal'>
+                {color.productCount}
+              </Badge>
+            </div>
           ))}
         </AccordionContent>
       </AccordionItem>

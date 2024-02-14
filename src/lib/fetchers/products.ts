@@ -185,8 +185,8 @@ export async function getFilteredProducts(filter?: ActiveFilters) {
       id: products.id,
     })
     .from(products)
-    .leftJoin(productCategories, eq(products.id, productCategories.productId))
-    .leftJoin(productStocks, eq(products.id, productStocks.productId))
+    .innerJoin(productCategories, eq(products.id, productCategories.productId))
+    .innerJoin(productStocks, eq(products.id, productStocks.productId))
     .where(
       and(
         filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
@@ -230,7 +230,7 @@ export async function getFilteredProducts(filter?: ActiveFilters) {
     },
     where: inArray(products.id, productIds),
     orderBy: filter?.sort === 'pricedesc' ? desc(products.sellPrice) : asc(products.sellPrice),
-    offset: filter?.page ? 12 : undefined,
+    offset: filter?.page ? 12 * filter.page : undefined,
     limit: 12,
   });
   return { products: productsResult, productsCount: productIds.length };

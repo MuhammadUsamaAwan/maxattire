@@ -21,6 +21,7 @@ const getCachedData = unstable_cache(
         minPrice: searchParams.min_price ? Number(searchParams.min_price) : undefined,
         maxPrice: searchParams.max_price ? Number(searchParams.max_price) : undefined,
         sort: searchParams.sort,
+        page: searchParams.page ? Number(searchParams.page) : undefined,
       },
       isUndefined
     ) as ActiveFilters;
@@ -47,7 +48,7 @@ export async function CategoryProducts({ category, searchParams }: CategoryProdu
     <>
       <div className='mb-4 flex flex-col justify-between gap-2 sm:flex-row sm:items-center'>
         <div>
-          Showing <span className='font-semibold'>{(currentPage - 1) * 12}</span> to{' '}
+          Showing <span className='font-semibold'>{(currentPage - 1) * 12 + productsCount === 0 ? 0 : 1}</span> to{' '}
           <span className='font-semibold'>{Math.min(currentPage * 12, productsCount ?? 0)}</span> of{' '}
           <span className='font-semibold'>{productsCount ?? 0}</span>
         </div>

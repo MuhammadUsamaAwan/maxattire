@@ -50,3 +50,7 @@ export function getInitials(name: string | null | undefined) {
       .join('') ?? ''
   );
 }
+
+export function unslugify(slug: string) {
+  return slug.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+}

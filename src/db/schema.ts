@@ -1007,6 +1007,10 @@ export const productStockRelations = relations(productStocks, ({ one }) => ({
     fields: [productStocks.colorId],
     references: [colors.id],
   }),
+  size: one(sizes, {
+    fields: [productStocks.sizeId],
+    references: [sizes.id],
+  }),
 }));
 
 export const colorsRelations = relations(colors, ({ many }) => ({

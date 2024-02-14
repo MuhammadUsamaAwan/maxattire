@@ -60,25 +60,22 @@ export async function getFilteredCategories(filter?: ActiveFilters) {
         .then(sizes => sizes.map(size => size.id))
     : undefined;
   const [colorsIds, sizesIds] = await Promise.all([colorsIdsPromise, sizesIdsPromise]);
-  const shouldProductFilter = filter?.minPrice || filter?.maxPrice || sizesIds || colorsIds;
-  const productsIds = shouldProductFilter
-    ? await db
-        .select({
-          id: products.id,
-        })
-        .from(products)
-        .innerJoin(productStocks, eq(products.id, productStocks.productId))
-        .where(
-          and(
-            filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
-            filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
-            sizesIds && inArray(productStocks.sizeId, sizesIds),
-            colorsIds && inArray(productStocks.colorId, colorsIds)
-          )
-        )
-        .groupBy(products.id)
-        .then(products => products.map(product => product.id))
-    : undefined;
+  const productsIds = await db
+    .select({
+      id: products.id,
+    })
+    .from(products)
+    .innerJoin(productStocks, eq(products.id, productStocks.productId))
+    .where(
+      and(
+        filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
+        filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
+        sizesIds && inArray(productStocks.sizeId, sizesIds),
+        colorsIds && inArray(productStocks.colorId, colorsIds)
+      )
+    )
+    .groupBy(products.id)
+    .then(products => products.map(product => product.id));
   const filteredCategories = await db
     .select({
       id: categories.id,

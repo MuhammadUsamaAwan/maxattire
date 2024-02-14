@@ -46,8 +46,8 @@ export function PriceFilter({ searchParams }: PriceFilterProps) {
       </label>
       <Link
         href={getSearchParams(searchParams, {
-          min_price: minPrice,
-          max_price: maxPrice,
+          min_price: minPrice === '' ? undefined : minPrice,
+          max_price: maxPrice === '' ? undefined : maxPrice,
         })}
         className={buttonVariants()}
       >
