@@ -7,7 +7,7 @@ import type { CategoriesSearchParams } from '~/types';
 import { buttonVariants } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 
-import { getSearchParams } from './category-filters';
+import { getSearchParams } from '../[categorySlug]/_components/category-filters';
 
 type PriceFilterProps = {
   searchParams: CategoriesSearchParams;

@@ -1,11 +1,11 @@
 'use server';
 
 import { db } from '~/db';
-import type { ActiveFilters } from '~/types';
+import type { BrandsFilters, CategoriesFilters } from '~/types';
 import { and, count, eq, gt, inArray, isNull, lt } from 'drizzle-orm';
 import { arrayToTree } from 'performant-array-to-tree';
 
-import { categories, colors, productCategories, products, productStocks, sizes } from '~/db/schema';
+import { categories, colors, productCategories, products, productStocks, sizes, stores } from '~/db/schema';
 
 export async function getCategories() {
   return db.query.categories.findMany({
@@ -38,7 +38,7 @@ export type FilteredCategory = {
   }[];
 };
 
-export async function getFilteredCategories(filter?: ActiveFilters) {
+export async function getFilteredCategories(filter?: CategoriesFilters) {
   const colorsIdsPromise = filter?.colors
     ? db.query.colors
         .findMany({
@@ -72,6 +72,76 @@ export async function getFilteredCategories(filter?: ActiveFilters) {
         filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
         sizesIds && inArray(productStocks.sizeId, sizesIds),
         colorsIds && inArray(productStocks.colorId, colorsIds)
+      )
+    )
+    .groupBy(products.id)
+    .then(products => products.map(product => product.id));
+  const filteredCategories = await db
+    .select({
+      id: categories.id,
+      slug: categories.slug,
+      title: categories.title,
+      productCount: count(productCategories.productId),
+      parentId: categories.parentId,
+    })
+    .from(categories)
+    .innerJoin(
+      productCategories,
+      and(
+        eq(categories.id, productCategories.categoryId),
+        productsIds && inArray(productCategories.productId, productsIds)
+      )
+    )
+    .groupBy(categories.id, categories.slug, categories.title, categories.parentId);
+  const nestedCategories = arrayToTree(filteredCategories, {
+    dataField: null,
+  }) as FilteredCategory[];
+  return nestedCategories;
+}
+
+export async function getFilteredBrandCategories(filter?: BrandsFilters) {
+  const brandPromise = filter?.brand
+    ? db.query.stores.findFirst({
+        where: eq(stores.slug, filter.brand),
+        columns: {
+          id: true,
+        },
+      })
+    : undefined;
+  const colorsIdsPromise = filter?.colors
+    ? db.query.colors
+        .findMany({
+          where: inArray(colors.slug, filter.colors),
+          columns: {
+            id: true,
+          },
+        })
+        .then(colors => colors.map(color => color.id))
+    : undefined;
+  const sizesIdsPromise = filter?.sizes
+    ? db.query.sizes
+        .findMany({
+          where: inArray(sizes.slug, filter.sizes),
+          columns: {
+            id: true,
+          },
+        })
+        .then(sizes => sizes.map(size => size.id))
+    : undefined;
+  const [brand, colorsIds, sizesIds] = await Promise.all([brandPromise, colorsIdsPromise, sizesIdsPromise]);
+  const productsIds = await db
+    .select({
+      id: products.id,
+    })
+    .from(products)
+    .innerJoin(productStocks, eq(products.id, productStocks.productId))
+    .where(
+      and(
+        filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
+        filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
+        sizesIds && inArray(productStocks.sizeId, sizesIds),
+        colorsIds && inArray(productStocks.colorId, colorsIds),
+        brand && eq(products.storeId, brand.id)
       )
     )
     .groupBy(products.id)

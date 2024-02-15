@@ -5,13 +5,13 @@ import type { CategoriesSearchParams } from '~/types';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select';
 
-import { getSearchParams } from './category-filters';
+import { getSearchParams } from '../[categorySlug]/_components/category-filters';
 
 type SortCategoryProductsProps = {
   searchParams: CategoriesSearchParams;
 };
 
-export function SortCategoryProducts({ searchParams }: SortCategoryProductsProps) {
+export function SortProducts({ searchParams }: SortCategoryProductsProps) {
   const router = useRouter();
   const pathname = usePathname();
 

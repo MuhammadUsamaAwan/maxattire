@@ -1,31 +1,32 @@
 import { unstable_cache } from 'next/cache';
 import Link from 'next/link';
-import type { ActiveFilters, CategoriesSearchParams } from '~/types';
+import type { BrandsSearchParams, CategoriesFilters, CategoriesSearchParams } from '~/types';
 import { isUndefined, omitBy } from 'lodash';
 
-import { getFilteredProducts } from '~/lib/fetchers/products';
+import { getFilteredBrandProducts } from '~/lib/fetchers/products';
 import { Button, buttonVariants } from '~/components/ui/button';
 import { Icons } from '~/components/icons';
 import { ProductCard } from '~/components/product-card';
 
-import { getSearchParams } from './category-filters';
-import { SortCategoryProducts } from './sort-category-products';
+import { SortProducts } from '../../_components/sort-products';
+import { getSearchParams } from './brand-filters';
 
 const getCachedData = unstable_cache(
-  async (category: string, searchParams: CategoriesSearchParams) => {
+  async (brand: string, searchParams: BrandsSearchParams) => {
     const filters = omitBy(
       {
+        brand,
         colors: searchParams.colors?.split(','),
         sizes: searchParams.sizes?.split(','),
-        category,
+        category: searchParams.category,
         minPrice: searchParams.min_price ? Number(searchParams.min_price) : undefined,
         maxPrice: searchParams.max_price ? Number(searchParams.max_price) : undefined,
         sort: searchParams.sort,
         page: searchParams.page ? Number(searchParams.page) : undefined,
       },
       isUndefined
-    ) as ActiveFilters;
-    const productsPromise = getFilteredProducts(filters);
+    ) as CategoriesFilters;
+    const productsPromise = getFilteredBrandProducts(filters);
     return Promise.all([productsPromise]);
   },
   [],
@@ -34,13 +35,13 @@ const getCachedData = unstable_cache(
   }
 );
 
-type CategoryProductsProps = {
-  category: string;
+type BrandProductsProps = {
+  brand: string;
   searchParams: CategoriesSearchParams;
 };
 
-export async function CategoryProducts({ category, searchParams }: CategoryProductsProps) {
-  const [{ products, productsCount }] = await getCachedData(category, searchParams);
+export async function BrandProducts({ brand, searchParams }: BrandProductsProps) {
+  const [{ products, productsCount }] = await getCachedData(brand, searchParams);
   const { page } = searchParams;
   const currentPage = Number(page ?? 1);
 
@@ -57,7 +58,7 @@ export async function CategoryProducts({ category, searchParams }: CategoryProdu
             <Icons.caretSort className='size-4' />
             <span>Sort:</span>
           </div>
-          <SortCategoryProducts searchParams={searchParams} />
+          <SortProducts searchParams={searchParams} />
         </div>
       </div>
       <div className='grid grid-cols-2 gap-x-2 gap-y-4 sm:gap-x-6 sm:gap-y-8 lg:grid-cols-2 xl:grid-cols-3'>

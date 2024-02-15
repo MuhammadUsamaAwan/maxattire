@@ -1,35 +1,36 @@
 import { unstable_cache } from 'next/cache';
 import Link from 'next/link';
-import type { ActiveFilters, CategoriesSearchParams } from '~/types';
+import type { BrandsSearchParams, CategoriesFilters } from '~/types';
 import { isUndefined, omitBy } from 'lodash';
 
-import { getFilteredCategories } from '~/lib/fetchers/categories';
-import { getFilteredColors } from '~/lib/fetchers/colors';
-import { getFilteredSizes } from '~/lib/fetchers/sizes';
+import { getFilteredBrandCategories } from '~/lib/fetchers/categories';
+import { getFilteredBrandColors } from '~/lib/fetchers/colors';
+import { getFilteredBrandSizes } from '~/lib/fetchers/sizes';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion';
 import { Badge } from '~/components/ui/badge';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger } from '~/components/ui/tooltip';
 
-import { PriceFilter } from './price-filter';
+import { PriceFilter } from '../../_components/price-filter';
 
 const getCachedData = unstable_cache(
-  async (category: string, searchParams: CategoriesSearchParams) => {
+  async (brand: string, searchParams: BrandsSearchParams) => {
     const filters = omitBy(
       {
+        brand,
         colors: searchParams.colors?.split(','),
         sizes: searchParams.sizes?.split(','),
-        category,
+        category: searchParams.category,
         minPrice: searchParams.min_price ? Number(searchParams.min_price) : undefined,
         maxPrice: searchParams.max_price ? Number(searchParams.max_price) : undefined,
         sort: searchParams.sort,
         page: searchParams.page ? Number(searchParams.page) : undefined,
       },
       isUndefined
-    ) as ActiveFilters;
-    const categoriesPromise = getFilteredCategories(filters);
-    const sizesPromise = getFilteredSizes(filters);
-    const colorsPromise = getFilteredColors(filters);
+    ) as CategoriesFilters;
+    const categoriesPromise = getFilteredBrandCategories(filters);
+    const sizesPromise = getFilteredBrandSizes(filters);
+    const colorsPromise = getFilteredBrandColors(filters);
     return Promise.all([categoriesPromise, sizesPromise, colorsPromise]);
   },
   [],
@@ -38,15 +39,12 @@ const getCachedData = unstable_cache(
   }
 );
 
-type CategoryFiltersProps = {
-  category: string;
-  searchParams: CategoriesSearchParams;
+type BrandFiltersProps = {
+  brand: string;
+  searchParams: BrandsSearchParams;
 };
 
-export function getSearchParams(
-  searchParams: CategoriesSearchParams,
-  partialSearchParams: Partial<CategoriesSearchParams>
-) {
+export function getSearchParams(searchParams: BrandsSearchParams, partialSearchParams: Partial<BrandsSearchParams>) {
   const newSearchParams = new URLSearchParams(
     omitBy(
       {
@@ -59,8 +57,8 @@ export function getSearchParams(
   return `?${newSearchParams.toString()}`;
 }
 
-export async function CategoryFilters({ category, searchParams }: CategoryFiltersProps) {
-  const [categories, sizes, colors] = await getCachedData(category, searchParams);
+export async function BrandFilters({ brand, searchParams }: BrandFiltersProps) {
+  const [categories, sizes, colors] = await getCachedData(brand, searchParams);
   const selectedSizes = searchParams.sizes?.split(',') ?? [];
   const selectedColors = searchParams.colors?.split(',') ?? [];
 
@@ -73,7 +71,12 @@ export async function CategoryFilters({ category, searchParams }: CategoryFilter
             {categories?.map(category => (
               <AccordionItem key={category.slug} value={category.slug}>
                 <AccordionTrigger>
-                  <Link href={category.slug + getSearchParams(searchParams, {})} className='hover:text-primary'>
+                  <Link
+                    href={getSearchParams(searchParams, {
+                      category: category.slug,
+                    })}
+                    className='hover:text-primary'
+                  >
                     {category.title}
                     <Badge variant='outline' className='ml-2 font-normal'>
                       {category.productCount}
@@ -84,7 +87,9 @@ export async function CategoryFilters({ category, searchParams }: CategoryFilter
                   {category.children?.map(child => (
                     <Link
                       key={child.slug}
-                      href={child.slug + getSearchParams(searchParams, {})}
+                      href={getSearchParams(searchParams, {
+                        category: child.slug,
+                      })}
                       className='hover:text-primary'
                     >
                       {child.title}
