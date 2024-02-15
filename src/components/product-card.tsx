@@ -32,7 +32,7 @@ export function ProductCard({ product }: ProductCard) {
   return (
     <Card className='overflow-hidden'>
       <CardHeader className='border-b p-0'>
-        <Link aria-label={product.title} href={`/product/${product.slug}`}>
+        <Link aria-label={product.title} href={`/products/${product.slug}`}>
           <AspectRatio ratio={4 / 3}>
             {product.thumbnail ? (
               <Image src={product.thumbnail ?? ''} alt={product.title} className='object-cover' fill loading='lazy' />
@@ -44,7 +44,7 @@ export function ProductCard({ product }: ProductCard) {
       </CardHeader>
       <CardContent className='space-y-1.5 p-4'>
         <CardTitle className='line-clamp-1'>
-          <Link href={`/product/${product.title}`}>{product.title}</Link>
+          <Link href={`/products/${product.title}`}>{product.title}</Link>
         </CardTitle>
         <div>
           {product.discount && product.discount > 0 ? (

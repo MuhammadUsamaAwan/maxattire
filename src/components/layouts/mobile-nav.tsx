@@ -7,8 +7,8 @@ import { useSelectedLayoutSegment } from 'next/navigation';
 import { ViewVerticalIcon } from '@radix-ui/react-icons';
 
 import { siteConfig } from '~/config/site';
+import { type Brands } from '~/lib/fetchers/brands';
 import { type Categories } from '~/lib/fetchers/categories';
-import { type Stores } from '~/lib/fetchers/stores';
 import { cn } from '~/lib/utils';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion';
 import { Button } from '~/components/ui/button';
@@ -17,10 +17,10 @@ import { Sheet, SheetContent, SheetTrigger } from '~/components/ui/sheet';
 
 type MobileNavProps = {
   categories: Categories;
-  stores: Stores;
+  brands: Brands;
 };
 
-export function MobileNav({ categories, stores }: MobileNavProps) {
+export function MobileNav({ categories, brands }: MobileNavProps) {
   const segment = useSelectedLayoutSegment();
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -63,9 +63,9 @@ export function MobileNav({ categories, stores }: MobileNavProps) {
                         </MobileLink>
                       ))}
                       <div className='space-y-2'>
-                        {stores.map(store => (
-                          <Link key={store.slug} href={`/brands/${store.slug}`} className='block w-max border p-5'>
-                            <Image src={store.logo ?? ''} alt={store.slug} width={86} height={38} />
+                        {brands.map(brand => (
+                          <Link key={brand.slug} href={`/brands/${brand.slug}`} className='block w-max border p-5'>
+                            <Image src={brand.logo ?? ''} alt={brand.slug} width={86} height={38} />
                           </Link>
                         ))}
                       </div>

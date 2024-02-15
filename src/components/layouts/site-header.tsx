@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { type Session } from 'next-auth';
 
 import { signOut } from '~/lib/actions/auth';
+import { type Brands } from '~/lib/fetchers/brands';
 import { type Categories } from '~/lib/fetchers/categories';
-import { type Stores } from '~/lib/fetchers/stores';
 import { getInitials } from '~/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button, buttonVariants } from '~/components/ui/button';
@@ -25,15 +25,15 @@ import { ProductSearch } from '~/components/layouts/products-search';
 type SiteHeaderProps = {
   categories: Categories;
   session: Session | null;
-  stores: Stores;
+  brands: Brands;
 };
 
-export function SiteHeader({ categories, session, stores }: SiteHeaderProps) {
+export function SiteHeader({ categories, session, brands }: SiteHeaderProps) {
   return (
     <header className='sticky top-0 z-50 w-full border-b bg-background'>
       <div className='container flex h-16 items-center'>
-        <MainNav categories={categories} stores={stores} />
-        <MobileNav categories={categories} stores={stores} />
+        <MainNav categories={categories} brands={brands} />
+        <MobileNav categories={categories} brands={brands} />
         <div className='flex flex-1 items-center justify-end space-x-4'>
           <nav className='flex items-center space-x-2'>
             <ProductSearch />

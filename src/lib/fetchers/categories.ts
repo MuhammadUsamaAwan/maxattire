@@ -9,7 +9,12 @@ import { categories, colors, productCategories, products, productStocks, sizes, 
 
 export async function getCategories() {
   return db.query.categories.findMany({
-    where: and(eq(categories.type, 'product'), isNull(categories.parentId)),
+    where: and(
+      eq(categories.type, 'product'),
+      isNull(categories.parentId),
+      isNull(categories.deletedAt),
+      eq(categories.status, 'active')
+    ),
     columns: {
       title: true,
       slug: true,
@@ -42,7 +47,7 @@ export async function getFilteredCategories(filter?: CategoriesFilters) {
   const colorsIdsPromise = filter?.colors
     ? db.query.colors
         .findMany({
-          where: inArray(colors.slug, filter.colors),
+          where: and(inArray(colors.slug, filter.colors), isNull(colors.deletedAt)),
           columns: {
             id: true,
           },
@@ -52,7 +57,7 @@ export async function getFilteredCategories(filter?: CategoriesFilters) {
   const sizesIdsPromise = filter?.sizes
     ? db.query.sizes
         .findMany({
-          where: inArray(sizes.slug, filter.sizes),
+          where: and(inArray(sizes.slug, filter.sizes), isNull(sizes.deletedAt)),
           columns: {
             id: true,
           },
@@ -71,7 +76,9 @@ export async function getFilteredCategories(filter?: CategoriesFilters) {
         filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
         filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
         sizesIds && inArray(productStocks.sizeId, sizesIds),
-        colorsIds && inArray(productStocks.colorId, colorsIds)
+        colorsIds && inArray(productStocks.colorId, colorsIds),
+        eq(products.status, 'active'),
+        isNull(products.deletedAt)
       )
     )
     .groupBy(products.id)
@@ -102,7 +109,7 @@ export async function getFilteredCategories(filter?: CategoriesFilters) {
 export async function getFilteredBrandCategories(filter?: BrandsFilters) {
   const brandPromise = filter?.brand
     ? db.query.stores.findFirst({
-        where: eq(stores.slug, filter.brand),
+        where: and(eq(stores.slug, filter.brand), isNull(stores.deletedAt), eq(stores.status, 'active')),
         columns: {
           id: true,
         },
@@ -111,7 +118,7 @@ export async function getFilteredBrandCategories(filter?: BrandsFilters) {
   const colorsIdsPromise = filter?.colors
     ? db.query.colors
         .findMany({
-          where: inArray(colors.slug, filter.colors),
+          where: and(inArray(colors.slug, filter.colors), isNull(colors.deletedAt)),
           columns: {
             id: true,
           },
@@ -121,7 +128,7 @@ export async function getFilteredBrandCategories(filter?: BrandsFilters) {
   const sizesIdsPromise = filter?.sizes
     ? db.query.sizes
         .findMany({
-          where: inArray(sizes.slug, filter.sizes),
+          where: and(inArray(sizes.slug, filter.sizes), isNull(sizes.deletedAt)),
           columns: {
             id: true,
           },
@@ -141,7 +148,9 @@ export async function getFilteredBrandCategories(filter?: BrandsFilters) {
         filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
         sizesIds && inArray(productStocks.sizeId, sizesIds),
         colorsIds && inArray(productStocks.colorId, colorsIds),
-        brand && eq(products.storeId, brand.id)
+        brand && eq(products.storeId, brand.id),
+        eq(products.status, 'active'),
+        isNull(products.deletedAt)
       )
     )
     .groupBy(products.id)
@@ -160,6 +169,14 @@ export async function getFilteredBrandCategories(filter?: BrandsFilters) {
       and(
         eq(categories.id, productCategories.categoryId),
         productsIds && inArray(productCategories.productId, productsIds)
+      )
+    )
+    .where(
+      and(
+        eq(categories.type, 'product'),
+        isNull(categories.parentId),
+        isNull(categories.deletedAt),
+        eq(categories.status, 'active')
       )
     )
     .groupBy(categories.id, categories.slug, categories.title, categories.parentId);

@@ -2,24 +2,15 @@
 
 import { db } from '~/db';
 import type { BrandsFilters, CategoriesFilters } from '~/types';
-import { and, countDistinct, eq, gt, inArray, lt } from 'drizzle-orm';
+import { and, countDistinct, eq, gt, inArray, isNull, lt } from 'drizzle-orm';
 
 import { categories, colors, productCategories, products, productStocks, sizes, stores } from '~/db/schema';
-
-export async function getSizes() {
-  return db.query.sizes.findMany({
-    columns: {
-      slug: true,
-      title: true,
-    },
-  });
-}
 
 export async function getFilteredSizes(filter?: CategoriesFilters) {
   const colorsIdsPromise = filter?.colors
     ? db.query.colors
         .findMany({
-          where: inArray(colors.slug, filter.colors),
+          where: and(inArray(colors.slug, filter.colors), isNull(colors.deletedAt)),
           columns: {
             id: true,
           },
@@ -28,7 +19,7 @@ export async function getFilteredSizes(filter?: CategoriesFilters) {
     : undefined;
   const categoryPromise = filter?.category
     ? db.query.categories.findFirst({
-        where: eq(categories.slug, filter.category),
+        where: and(eq(categories.slug, filter.category), isNull(categories.deletedAt)),
         columns: {
           id: true,
         },
@@ -45,7 +36,9 @@ export async function getFilteredSizes(filter?: CategoriesFilters) {
       and(
         filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
         filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
-        category && eq(productCategories.categoryId, category.id)
+        category && eq(productCategories.categoryId, category.id),
+        eq(products.status, 'active'),
+        isNull(products.deletedAt)
       )
     )
     .groupBy(products.id)
@@ -65,6 +58,7 @@ export async function getFilteredSizes(filter?: CategoriesFilters) {
         productsIds && inArray(productStocks.productId, productsIds)
       )
     )
+    .where(isNull(sizes.deletedAt))
     .groupBy(sizes.id, sizes.slug, sizes.title);
   return filteredSizes;
 }
@@ -81,7 +75,7 @@ export async function getFilteredBrandSizes(filter?: BrandsFilters) {
   const colorsIdsPromise = filter?.colors
     ? db.query.colors
         .findMany({
-          where: inArray(colors.slug, filter.colors),
+          where: and(inArray(colors.slug, filter.colors), isNull(colors.deletedAt)),
           columns: {
             id: true,
           },
@@ -90,7 +84,7 @@ export async function getFilteredBrandSizes(filter?: BrandsFilters) {
     : undefined;
   const categoryPromise = filter?.category
     ? db.query.categories.findFirst({
-        where: eq(categories.slug, filter.category),
+        where: and(eq(categories.slug, filter.category), isNull(categories.deletedAt)),
         columns: {
           id: true,
         },
@@ -108,7 +102,9 @@ export async function getFilteredBrandSizes(filter?: BrandsFilters) {
         filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
         filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
         category && eq(productCategories.categoryId, category.id),
-        brand && eq(products.storeId, brand.id)
+        brand && eq(products.storeId, brand.id),
+        eq(products.status, 'active'),
+        isNull(products.deletedAt)
       )
     )
     .groupBy(products.id)
@@ -128,6 +124,7 @@ export async function getFilteredBrandSizes(filter?: BrandsFilters) {
         productsIds && inArray(productStocks.productId, productsIds)
       )
     )
+    .where(isNull(sizes.deletedAt))
     .groupBy(sizes.id, sizes.slug, sizes.title);
   return filteredSizes;
 }

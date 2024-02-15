@@ -2,7 +2,7 @@
 
 import { db } from '~/db';
 import type { BrandsFilters, CategoriesFilters } from '~/types';
-import { and, asc, desc, eq, gt, inArray, lt } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, inArray, isNull, lt } from 'drizzle-orm';
 
 import { categories, colors, productCategories, products, productStocks, sizes, stores } from '~/db/schema';
 
@@ -12,8 +12,6 @@ export async function getNewProducts() {
       title: true,
       slug: true,
       thumbnail: true,
-      unitPrice: true,
-      purchasePrice: true,
       sellPrice: true,
       discount: true,
     },
@@ -38,7 +36,7 @@ export async function getNewProducts() {
       },
     },
     limit: 8,
-    where: eq(products.isNewarrival, 1),
+    where: and(eq(products.isNewarrival, 1), isNull(products.deletedAt), eq(products.status, 'active')),
   });
 }
 
@@ -48,8 +46,6 @@ export async function getTopProducts() {
       title: true,
       slug: true,
       thumbnail: true,
-      unitPrice: true,
-      purchasePrice: true,
       sellPrice: true,
       discount: true,
     },
@@ -74,7 +70,7 @@ export async function getTopProducts() {
       },
     },
     limit: 8,
-    where: eq(products.isTopselling, 1),
+    where: and(eq(products.isTopselling, 1), isNull(products.deletedAt), eq(products.status, 'active')),
   });
 }
 
@@ -84,8 +80,6 @@ export async function getFeaturedProducts() {
       title: true,
       slug: true,
       thumbnail: true,
-      unitPrice: true,
-      purchasePrice: true,
       sellPrice: true,
       discount: true,
     },
@@ -110,7 +104,7 @@ export async function getFeaturedProducts() {
       },
     },
     limit: 8,
-    where: eq(products.isFeatured, 1),
+    where: and(eq(products.isFeatured, 1), isNull(products.deletedAt), eq(products.status, 'active')),
   });
 }
 
@@ -120,8 +114,6 @@ export async function getWholeSaleProducts() {
       title: true,
       slug: true,
       thumbnail: true,
-      unitPrice: true,
-      purchasePrice: true,
       sellPrice: true,
       discount: true,
     },
@@ -146,34 +138,34 @@ export async function getWholeSaleProducts() {
       },
     },
     limit: 8,
-    where: eq(products.isWholesale, 1),
+    where: and(eq(products.isWholesale, 1), isNull(products.deletedAt), eq(products.status, 'active')),
   });
 }
 
 export async function getFilteredProducts(filter?: CategoriesFilters) {
-  const sizesIdsPromise = filter?.sizes
-    ? db.query.sizes
-        .findMany({
-          where: inArray(sizes.slug, filter.sizes),
-          columns: {
-            id: true,
-          },
-        })
-        .then(sizes => sizes.map(size => size.id))
-    : undefined;
   const colorsIdsPromise = filter?.colors
     ? db.query.colors
         .findMany({
-          where: inArray(colors.slug, filter.colors),
+          where: and(inArray(colors.slug, filter.colors), isNull(colors.deletedAt)),
           columns: {
             id: true,
           },
         })
         .then(colors => colors.map(color => color.id))
     : undefined;
+  const sizesIdsPromise = filter?.sizes
+    ? db.query.sizes
+        .findMany({
+          where: and(inArray(sizes.slug, filter.sizes), isNull(sizes.deletedAt)),
+          columns: {
+            id: true,
+          },
+        })
+        .then(sizes => sizes.map(size => size.id))
+    : undefined;
   const categoryPromise = filter?.category
     ? db.query.categories.findFirst({
-        where: eq(categories.slug, filter.category),
+        where: and(eq(categories.slug, filter.category), isNull(categories.deletedAt)),
         columns: {
           id: true,
         },
@@ -193,7 +185,9 @@ export async function getFilteredProducts(filter?: CategoriesFilters) {
         filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
         category && eq(productCategories.categoryId, category.id),
         sizesIds && inArray(productStocks.sizeId, sizesIds),
-        colorsIds && inArray(productStocks.colorId, colorsIds)
+        colorsIds && inArray(productStocks.colorId, colorsIds),
+        eq(products.status, 'active'),
+        isNull(products.deletedAt)
       )
     )
     .groupBy(products.id)
@@ -203,8 +197,6 @@ export async function getFilteredProducts(filter?: CategoriesFilters) {
       title: true,
       slug: true,
       thumbnail: true,
-      unitPrice: true,
-      purchasePrice: true,
       sellPrice: true,
       discount: true,
     },
@@ -245,29 +237,29 @@ export async function getFilteredBrandProducts(filter?: BrandsFilters) {
         },
       })
     : undefined;
-  const sizesIdsPromise = filter?.sizes
-    ? db.query.sizes
-        .findMany({
-          where: inArray(sizes.slug, filter.sizes),
-          columns: {
-            id: true,
-          },
-        })
-        .then(sizes => sizes.map(size => size.id))
-    : undefined;
   const colorsIdsPromise = filter?.colors
     ? db.query.colors
         .findMany({
-          where: inArray(colors.slug, filter.colors),
+          where: and(inArray(colors.slug, filter.colors), isNull(colors.deletedAt)),
           columns: {
             id: true,
           },
         })
         .then(colors => colors.map(color => color.id))
     : undefined;
+  const sizesIdsPromise = filter?.sizes
+    ? db.query.sizes
+        .findMany({
+          where: and(inArray(sizes.slug, filter.sizes), isNull(sizes.deletedAt)),
+          columns: {
+            id: true,
+          },
+        })
+        .then(sizes => sizes.map(size => size.id))
+    : undefined;
   const categoryPromise = filter?.category
     ? db.query.categories.findFirst({
-        where: eq(categories.slug, filter.category),
+        where: and(eq(categories.slug, filter.category), isNull(categories.deletedAt)),
         columns: {
           id: true,
         },
@@ -293,7 +285,9 @@ export async function getFilteredBrandProducts(filter?: BrandsFilters) {
         category && eq(productCategories.categoryId, category.id),
         sizesIds && inArray(productStocks.sizeId, sizesIds),
         colorsIds && inArray(productStocks.colorId, colorsIds),
-        brand && eq(products.storeId, brand.id)
+        brand && eq(products.storeId, brand.id),
+        eq(products.status, 'active'),
+        isNull(products.deletedAt)
       )
     )
     .groupBy(products.id)
@@ -303,8 +297,6 @@ export async function getFilteredBrandProducts(filter?: BrandsFilters) {
       title: true,
       slug: true,
       thumbnail: true,
-      unitPrice: true,
-      purchasePrice: true,
       sellPrice: true,
       discount: true,
     },
@@ -337,3 +329,47 @@ export async function getFilteredBrandProducts(filter?: BrandsFilters) {
 }
 
 export type Products = Awaited<ReturnType<typeof getNewProducts>>;
+
+export async function getProduct(slug: string) {
+  return db.query.products.findFirst({
+    where: and(eq(products.slug, slug), isNull(products.deletedAt), eq(products.status, 'active')),
+    columns: {
+      title: true,
+      slug: true,
+      thumbnail: true,
+      sellPrice: true,
+      discount: true,
+      tax: true,
+      description: true,
+      sku: true,
+    },
+    with: {
+      productStocks: {
+        with: {
+          color: {
+            columns: {
+              title: true,
+              slug: true,
+              code: true,
+            },
+          },
+          size: {
+            columns: {
+              title: true,
+              slug: true,
+            },
+          },
+          images: {
+            columns: {
+              fileName: true,
+              type: true,
+            },
+          },
+        },
+        columns: {
+          id: true,
+        },
+      },
+    },
+  });
+}

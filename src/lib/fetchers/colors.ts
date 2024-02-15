@@ -2,25 +2,15 @@
 
 import { db } from '~/db';
 import type { BrandsFilters, CategoriesFilters } from '~/types';
-import { and, countDistinct, eq, gt, inArray, lt } from 'drizzle-orm';
+import { and, countDistinct, eq, gt, inArray, isNull, lt } from 'drizzle-orm';
 
 import { categories, colors, productCategories, products, productStocks, sizes, stores } from '~/db/schema';
-
-export async function getColors() {
-  return db.query.colors.findMany({
-    columns: {
-      slug: true,
-      title: true,
-      code: true,
-    },
-  });
-}
 
 export async function getFilteredColors(filter?: CategoriesFilters) {
   const sizesIdsPromise = filter?.sizes
     ? db.query.sizes
         .findMany({
-          where: inArray(sizes.slug, filter.sizes),
+          where: and(inArray(sizes.slug, filter.sizes), isNull(sizes.deletedAt)),
           columns: {
             id: true,
           },
@@ -29,7 +19,7 @@ export async function getFilteredColors(filter?: CategoriesFilters) {
     : undefined;
   const categoryPromise = filter?.category
     ? db.query.categories.findFirst({
-        where: eq(categories.slug, filter.category),
+        where: and(eq(categories.slug, filter.category), isNull(categories.deletedAt)),
         columns: {
           id: true,
         },
@@ -46,7 +36,9 @@ export async function getFilteredColors(filter?: CategoriesFilters) {
       and(
         filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
         filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
-        category && eq(productCategories.categoryId, category.id)
+        category && eq(productCategories.categoryId, category.id),
+        eq(products.status, 'active'),
+        isNull(products.deletedAt)
       )
     )
     .groupBy(products.id)
@@ -67,6 +59,7 @@ export async function getFilteredColors(filter?: CategoriesFilters) {
         productsIds && inArray(productStocks.productId, productsIds)
       )
     )
+    .where(isNull(colors.deletedAt))
     .groupBy(colors.id, colors.slug, colors.title, colors.code);
   return filteredColors;
 }
@@ -74,7 +67,7 @@ export async function getFilteredColors(filter?: CategoriesFilters) {
 export async function getFilteredBrandColors(filter?: BrandsFilters) {
   const brandPromise = filter?.brand
     ? db.query.stores.findFirst({
-        where: eq(stores.slug, filter.brand),
+        where: and(eq(stores.slug, filter.brand), isNull(stores.deletedAt), eq(stores.status, 'active')),
         columns: {
           id: true,
         },
@@ -83,7 +76,7 @@ export async function getFilteredBrandColors(filter?: BrandsFilters) {
   const sizesIdsPromise = filter?.sizes
     ? db.query.sizes
         .findMany({
-          where: inArray(sizes.slug, filter.sizes),
+          where: and(inArray(sizes.slug, filter.sizes), isNull(sizes.deletedAt)),
           columns: {
             id: true,
           },
@@ -92,7 +85,7 @@ export async function getFilteredBrandColors(filter?: BrandsFilters) {
     : undefined;
   const categoryPromise = filter?.category
     ? db.query.categories.findFirst({
-        where: eq(categories.slug, filter.category),
+        where: and(eq(categories.slug, filter.category), isNull(categories.deletedAt)),
         columns: {
           id: true,
         },
@@ -110,7 +103,9 @@ export async function getFilteredBrandColors(filter?: BrandsFilters) {
         filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
         filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
         category && eq(productCategories.categoryId, category.id),
-        brand && eq(products.storeId, brand.id)
+        brand && eq(products.storeId, brand.id),
+        eq(products.status, 'active'),
+        isNull(products.deletedAt)
       )
     )
     .groupBy(products.id)
@@ -131,6 +126,7 @@ export async function getFilteredBrandColors(filter?: BrandsFilters) {
         productsIds && inArray(productStocks.productId, productsIds)
       )
     )
+    .where(isNull(colors.deletedAt))
     .groupBy(colors.id, colors.slug, colors.title, colors.code);
   return filteredColors;
 }

@@ -1,14 +1,14 @@
 'use server';
 
 import { db } from '~/db';
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, isNull } from 'drizzle-orm';
 
 import { settings } from '~/db/schema';
 
 export async function getLinks() {
   const keys = ['Email', 'Phone', 'Facebook', 'Instagram', 'Twitter', 'LinkedIn'];
   const links = await db.query.settings.findMany({
-    where: and(inArray(settings.key, keys), eq(settings.status, 'active')),
+    where: and(inArray(settings.key, keys), eq(settings.status, 'active'), isNull(settings.deletedAt)),
     columns: {
       value: true,
       key: true,

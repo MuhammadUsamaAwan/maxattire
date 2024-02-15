@@ -2,7 +2,7 @@
 
 import { db } from '~/db';
 
-export async function getStores() {
+export async function getBrands() {
   return db.query.stores.findMany({
     columns: {
       logo: true,
@@ -11,4 +11,4 @@ export async function getStores() {
   });
 }
 
-export type Stores = Awaited<ReturnType<typeof getStores>>;
+export type Brands = Awaited<ReturnType<typeof getBrands>>;
