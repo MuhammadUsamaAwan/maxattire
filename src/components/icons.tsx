@@ -17,6 +17,8 @@ import {
   GearIcon,
   ImageIcon,
   MagnifyingGlassIcon,
+  MinusIcon,
+  PlusIcon,
 } from '@radix-ui/react-icons';
 import { Loader2, ShoppingCart } from 'lucide-react';
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
@@ -42,6 +44,8 @@ export const Icons = {
   settings: GearIcon,
   placeholder: ImageIcon,
   search: MagnifyingGlassIcon,
+  minus: MinusIcon,
+  plus: PlusIcon,
   spinner: Loader2,
   cart: ShoppingCart,
   star: BsStar,

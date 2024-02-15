@@ -16,15 +16,15 @@ export async function getProductStock(colorSlug?: string) {
   if (!color) return [];
   return await db
     .select({
+      id: productStocks.id,
       quantity: productStocks.quantity,
       price: productStocks.price,
       size: {
-        id: sizes.id,
         title: sizes.title,
       },
     })
     .from(productStocks)
-    .leftJoin(sizes, and(eq(productStocks.sizeId, sizes.id), isNull(sizes.deletedAt)))
+    .innerJoin(sizes, and(eq(productStocks.sizeId, sizes.id), isNull(sizes.deletedAt)))
     .where(and(eq(productStocks.colorId, color.id), isNull(productStocks.deletedAt)));
 }
 
