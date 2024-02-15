@@ -1,6 +1,6 @@
 import { unstable_cache } from 'next/cache';
 import Link from 'next/link';
-import type { BrandsSearchParams, CategoriesFilters, CategoriesSearchParams } from '~/types';
+import type { BrandsSearchParams, CategoriesFilters } from '~/types';
 import { isUndefined, omitBy } from 'lodash';
 
 import { getFilteredBrandProducts } from '~/lib/fetchers/products';
@@ -37,7 +37,7 @@ const getCachedData = unstable_cache(
 
 type BrandProductsProps = {
   brand: string;
-  searchParams: CategoriesSearchParams;
+  searchParams: BrandsSearchParams;
 };
 
 export async function BrandProducts({ brand, searchParams }: BrandProductsProps) {
