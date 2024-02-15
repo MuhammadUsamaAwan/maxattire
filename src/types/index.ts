@@ -22,5 +22,5 @@ export type BrandsFilters = CategoriesFilters & {
 };
 
 export type BrandsSearchParams = CategoriesSearchParams & {
-  category?: string | undefined;
+  category: string | undefined;
 };

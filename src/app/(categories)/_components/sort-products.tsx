@@ -1,14 +1,14 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import type { CategoriesSearchParams } from '~/types';
+import type { BrandsSearchParams, CategoriesSearchParams } from '~/types';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select';
 
 import { getSearchParams } from '../[categorySlug]/_components/category-filters';
 
 type SortCategoryProductsProps = {
-  searchParams: CategoriesSearchParams;
+  searchParams: CategoriesSearchParams | BrandsSearchParams;
 };
 
 export function SortProducts({ searchParams }: SortCategoryProductsProps) {
