@@ -3,9 +3,16 @@
 import { db } from '~/db';
 import { and, eq, isNull } from 'drizzle-orm';
 
-import { colors, productStocks, sizes } from '~/db/schema';
+import { colors, products, productStocks, sizes } from '~/db/schema';
 
-export async function getProductStock(colorSlug?: string) {
+export async function getProductStock(productSlug: string, colorSlug?: string) {
+  const product = await db.query.products.findFirst({
+    where: and(and(eq(products.slug, productSlug), isNull(products.deletedAt)), eq(products.status, 'active')),
+    columns: {
+      id: true,
+    },
+  });
+  if (!product) return [];
   if (!colorSlug) return [];
   const color = await db.query.colors.findFirst({
     where: and(and(eq(colors.slug, colorSlug), isNull(colors.deletedAt))),
@@ -25,7 +32,9 @@ export async function getProductStock(colorSlug?: string) {
     })
     .from(productStocks)
     .innerJoin(sizes, and(eq(productStocks.sizeId, sizes.id), isNull(sizes.deletedAt)))
-    .where(and(eq(productStocks.colorId, color.id), isNull(productStocks.deletedAt)));
+    .where(
+      and(eq(productStocks.colorId, color.id), isNull(productStocks.deletedAt), eq(productStocks.productId, product.id))
+    );
 }
 
 export type ProductStocks = Awaited<ReturnType<typeof getProductStock>>;

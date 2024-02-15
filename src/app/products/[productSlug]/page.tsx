@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
+import { getProductColors } from '~/lib/fetchers/colors';
 import { getProduct } from '~/lib/fetchers/products';
 import { getProductStock } from '~/lib/fetchers/productStock';
 import { getProductStockImages } from '~/lib/fetchers/productStockImages';
@@ -16,8 +17,9 @@ import { ProductImageCarousel } from '../_components/product-image-carousel';
 const getCachedData = unstable_cache(
   async (slug: string) => {
     const productPromise = getProduct(slug);
+    const colorsPromise = getProductColors(slug);
     const reviewsPromise = getProductReviews(slug);
-    return Promise.all([productPromise, reviewsPromise]);
+    return Promise.all([productPromise, colorsPromise, reviewsPromise]);
   },
   [],
   {
@@ -26,9 +28,9 @@ const getCachedData = unstable_cache(
 );
 
 const getCachedStockData = unstable_cache(
-  async (colorSlug?: string) => {
-    const stockPromise = getProductStock(colorSlug);
-    const stockImagesPromise = getProductStockImages(colorSlug);
+  async (productSlug: string, colorSlug?: string) => {
+    const stockPromise = getProductStock(productSlug, colorSlug);
+    const stockImagesPromise = getProductStockImages(productSlug, colorSlug);
     return Promise.all([stockPromise, stockImagesPromise]);
   },
   [],
@@ -47,8 +49,8 @@ type ProductPageProps = {
 };
 
 export default async function ProductPage({ params: { productSlug }, searchParams: { color } }: ProductPageProps) {
-  const [product, reviews] = await getCachedData(productSlug);
-  const [stock, productImages] = await getCachedStockData(color);
+  const [product, colors, reviews] = await getCachedData(productSlug);
+  const [stock, productImages] = await getCachedStockData(productSlug, color);
 
   const images = productImages
     .filter(fileName => fileName !== null)
@@ -85,7 +87,7 @@ export default async function ProductPage({ params: { productSlug }, searchParam
             </div>
           </div>
           <Separator className='my-1.5' />
-          <AddToCart color={color} product={product} stock={stock} />
+          <AddToCart color={color} colors={colors} product={product} stock={stock} />
           <Separator className='mt-5' />
           <Tabs defaultValue='description'>
             <TabsList>

@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { uniqBy } from 'lodash';
 
+import { type ProductColors } from '~/lib/fetchers/colors';
 import { type Product } from '~/lib/fetchers/products';
 import { type ProductStocks } from '~/lib/fetchers/productStock';
 import { formatPrice } from '~/lib/utils';
@@ -17,18 +17,11 @@ import { Icons } from '~/components/icons';
 type AddToCartProps = {
   color: string | undefined;
   product: Product;
+  colors: ProductColors;
   stock: ProductStocks;
 };
 
-export function AddToCart({ color, product, stock }: AddToCartProps) {
-  const colors = React.useMemo(
-    () =>
-      uniqBy(
-        product.productStocks.map(stock => stock.color),
-        'slug'
-      ) as { title: string; slug: string; code: string }[],
-    [product]
-  );
+export function AddToCart({ color, colors, product, stock }: AddToCartProps) {
   const [cartData, setCartData] = React.useState<
     {
       stockId: number;

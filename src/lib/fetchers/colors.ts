@@ -2,7 +2,7 @@
 
 import { db } from '~/db';
 import type { BrandsFilters, CategoriesFilters } from '~/types';
-import { and, countDistinct, eq, gt, inArray, isNull, lt } from 'drizzle-orm';
+import { and, countDistinct, eq, gt, inArray, isNotNull, isNull, lt } from 'drizzle-orm';
 
 import { categories, colors, productCategories, products, productStocks, sizes, stores } from '~/db/schema';
 
@@ -130,3 +130,33 @@ export async function getFilteredBrandColors(filter?: BrandsFilters) {
     .groupBy(colors.id, colors.slug, colors.title, colors.code);
   return filteredColors;
 }
+
+export async function getProductColors(productSlug: string) {
+  const product = await db.query.products.findFirst({
+    where: and(and(eq(products.slug, productSlug), isNull(products.deletedAt)), eq(products.status, 'active')),
+    columns: {
+      id: true,
+    },
+  });
+  if (!product) return [];
+  return db
+    .select({
+      slug: colors.slug,
+      title: colors.title,
+      code: colors.code,
+    })
+    .from(colors)
+    .innerJoin(
+      productStocks,
+      and(
+        eq(colors.id, productStocks.colorId),
+        isNull(productStocks.deletedAt),
+        isNotNull(productStocks.sizeId),
+        eq(productStocks.productId, product.id)
+      )
+    )
+    .where(isNull(colors.deletedAt))
+    .groupBy(colors.id, colors.slug, colors.title, colors.code);
+}
+
+export type ProductColors = Awaited<ReturnType<typeof getProductColors>>;

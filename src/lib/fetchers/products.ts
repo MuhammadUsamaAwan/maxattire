@@ -16,19 +16,6 @@ export async function getNewProducts() {
       discount: true,
     },
     with: {
-      productStocks: {
-        columns: {
-          id: true,
-        },
-        with: {
-          color: {
-            columns: {
-              title: true,
-              code: true,
-            },
-          },
-        },
-      },
       reviews: {
         columns: {
           rating: true,
