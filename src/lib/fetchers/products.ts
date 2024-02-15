@@ -353,12 +353,6 @@ export async function getProduct(slug: string) {
               code: true,
             },
           },
-          size: {
-            columns: {
-              title: true,
-              slug: true,
-            },
-          },
         },
         columns: {
           id: true,
@@ -367,3 +361,5 @@ export async function getProduct(slug: string) {
     },
   });
 }
+
+export type Product = NonNullable<Awaited<ReturnType<typeof getProduct>>>;

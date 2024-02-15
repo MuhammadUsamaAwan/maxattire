@@ -1,14 +1,14 @@
 'use server';
 
 import { db } from '~/db';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 
 import { colors, productStockImages, productStocks } from '~/db/schema';
 
 export async function getProductStockImages(colorSlug?: string) {
   if (!colorSlug) return db.select({ fileName: productStockImages.fileName }).from(productStockImages);
   const color = await db.query.colors.findFirst({
-    where: and(eq(colors.slug, colorSlug)),
+    where: and(and(eq(colors.slug, colorSlug), isNull(colors.deletedAt))),
     columns: {
       id: true,
     },
@@ -21,6 +21,10 @@ export async function getProductStockImages(colorSlug?: string) {
     .from(productStockImages)
     .leftJoin(
       productStocks,
-      and(eq(productStockImages.productStockId, productStocks.id), eq(productStocks.colorId, color.id))
+      and(
+        eq(productStockImages.productStockId, productStocks.id),
+        eq(productStocks.colorId, color.id),
+        isNull(productStocks.deletedAt)
+      )
     );
 }
