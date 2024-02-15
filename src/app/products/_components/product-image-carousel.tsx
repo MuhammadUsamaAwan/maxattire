@@ -14,7 +14,10 @@ type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
 type CarouselOptions = UseCarouselParameters['0'];
 
 interface ProductImageCarouselProps extends React.HTMLAttributes<HTMLDivElement> {
-  images: string[];
+  images: {
+    src: string;
+    alt: string;
+  }[];
   options?: CarouselOptions;
 }
 
@@ -86,8 +89,8 @@ export function ProductImageCarousel({ images, className, options, ...props }: P
                 role='group'
                 key={index}
                 aria-roledescription='slide'
-                src={image}
-                alt={''}
+                src={image.src}
+                alt={image.alt}
                 fill
                 sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
                 className='object-cover'
@@ -122,7 +125,12 @@ export function ProductImageCarousel({ images, className, options, ...props }: P
               onKeyDown={handleKeyDown}
             >
               <div className='absolute inset-0 z-10 bg-zinc-950/20 group-hover:bg-zinc-950/40' />
-              <Image src={image} alt={''} sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw' fill />
+              <Image
+                src={image.src}
+                alt={image.alt}
+                sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+                fill
+              />
               <span className='sr-only'>
                 Slide {i + 1} of {images.length}
               </span>

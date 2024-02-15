@@ -359,12 +359,6 @@ export async function getProduct(slug: string) {
               slug: true,
             },
           },
-          images: {
-            columns: {
-              fileName: true,
-              type: true,
-            },
-          },
         },
         columns: {
           id: true,

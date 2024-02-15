@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 
 import { getProduct } from '~/lib/fetchers/products';
+import { getProductStockImages } from '~/lib/fetchers/productStockImages';
 import { getProductReviews } from '~/lib/fetchers/reviews';
 import { formatPrice, getAvgRating } from '~/lib/utils';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion';
@@ -21,19 +22,32 @@ const getCachedData = unstable_cache(
   }
 );
 
+const getCachedImages = unstable_cache(
+  async (colorSlug?: string) => {
+    return await getProductStockImages(colorSlug);
+  },
+  [],
+  {
+    revalidate: 1, // 1 minute
+  }
+);
+
 type ProductPageProps = {
   params: {
     productSlug: string;
   };
+  searchParams: {
+    color: string | undefined;
+  };
 };
 
-export default async function ProductPage({ params: { productSlug } }: ProductPageProps) {
+export default async function ProductPage({ params: { productSlug }, searchParams: { color } }: ProductPageProps) {
   const [product, reviews] = await getCachedData(productSlug);
+  const productImages = await getCachedImages(color);
 
-  const images = (product?.productStocks
-    .flatMap(stock => stock.images)
-    .flatMap(image => image.fileName)
-    .filter(fileName => fileName !== null) ?? []) as string[];
+  const images = productImages
+    .filter(fileName => fileName !== null)
+    .map(fileName => ({ src: fileName, alt: product?.title ?? '' })) as unknown as { src: string; alt: string }[];
 
   return (
     <div className='container space-y-8 pb-8 pt-6 md:py-8'>
