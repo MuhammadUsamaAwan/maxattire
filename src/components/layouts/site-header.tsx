@@ -16,8 +16,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import { CartSheet } from '~/components/checkout/cart-sheet';
 import { Icons } from '~/components/icons';
+import { CartSheet } from '~/components/layouts/cart-sheet';
 import { MainNav } from '~/components/layouts/main-nav';
 import { MobileNav } from '~/components/layouts/mobile-nav';
 import { ProductSearch } from '~/components/layouts/products-search';

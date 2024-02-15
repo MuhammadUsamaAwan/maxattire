@@ -1,6 +1,6 @@
 import { type Products } from '~/lib/fetchers/products';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '~/components/ui/carousel';
-import { ProductCard } from '~/components/cards/product-card';
+import { ProductCard } from '~/components/product-card';
 
 import { ContentSection } from './content-section';
 

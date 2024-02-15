@@ -5,8 +5,8 @@ import { isUndefined, omitBy } from 'lodash';
 
 import { getFilteredProducts } from '~/lib/fetchers/products';
 import { Button, buttonVariants } from '~/components/ui/button';
-import { ProductCard } from '~/components/cards/product-card';
 import { Icons } from '~/components/icons';
+import { ProductCard } from '~/components/product-card';
 
 import { getSearchParams } from './category-filters';
 import { SortCategoryProducts } from './sort-category-products';
