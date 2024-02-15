@@ -48,14 +48,14 @@ export function MobileNav({ categories, stores }: MobileNavProps) {
               {categories.map(category => (
                 <AccordionItem value={category.title} key={category.slug}>
                   <AccordionTrigger className='text-sm capitalize'>
-                    <Link href={category.slug}>{category.title}</Link>
+                    <Link href={`/${category.slug}`}>{category.title}</Link>
                   </AccordionTrigger>
                   <AccordionContent>
                     <div className='flex flex-col space-y-2'>
                       {category.children.map(subCategory => (
                         <MobileLink
                           key={subCategory.slug}
-                          href={subCategory.slug}
+                          href={`/${subCategory.slug}`}
                           segment={String(segment)}
                           setIsOpen={setIsOpen}
                         >

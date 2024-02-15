@@ -34,13 +34,13 @@ export function MainNav({ categories, stores }: MainNavProps) {
           {categories.map(category => (
             <NavigationMenuItem key={category.slug}>
               <NavigationMenuTrigger className='h-auto capitalize'>
-                <Link href={category.slug}>{category.title}</Link>
+                <Link href={`/${category.slug}`}>{category.title}</Link>
               </NavigationMenuTrigger>
               <NavigationMenuContent className='flex items-start gap-3 p-6'>
                 <ul className='w-max shrink-0 space-y-1.5 md:w-[200px]'>
                   <li className='text-sm font-semibold'>Categories Pages</li>
                   {category.children.map(subCategory => (
-                    <ListItem key={subCategory.slug} title={subCategory.title} href={subCategory.slug} />
+                    <ListItem key={subCategory.slug} title={subCategory.title} href={`/${subCategory.slug}`} />
                   ))}
                 </ul>
                 <div className='space-y-1.5'>
