@@ -16,6 +16,19 @@ export async function getNewProducts() {
       discount: true,
     },
     with: {
+      productStocks: {
+        columns: {
+          id: true,
+        },
+        with: {
+          color: {
+            columns: {
+              title: true,
+              code: true,
+            },
+          },
+        },
+      },
       reviews: {
         columns: {
           rating: true,
@@ -321,6 +334,7 @@ export async function getProduct(slug: string) {
   return db.query.products.findFirst({
     where: and(eq(products.slug, slug), isNull(products.deletedAt), eq(products.status, 'active')),
     columns: {
+      id: true,
       title: true,
       slug: true,
       thumbnail: true,

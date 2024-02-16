@@ -31,9 +31,10 @@ export async function getFilteredColors(filter?: CategoriesFilters) {
       id: products.id,
     })
     .from(products)
-    .innerJoin(productCategories, eq(products.id, productCategories.productId))
-    .where(
+    .innerJoin(
+      productCategories,
       and(
+        eq(products.id, productCategories.productId),
         filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
         filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
         category && eq(productCategories.categoryId, category.id),
@@ -56,10 +57,10 @@ export async function getFilteredColors(filter?: CategoriesFilters) {
       and(
         eq(colors.id, productStocks.colorId),
         sizesIds && inArray(productStocks.sizeId, sizesIds),
-        productsIds && inArray(productStocks.productId, productsIds)
+        productsIds && inArray(productStocks.productId, productsIds),
+        isNull(colors.deletedAt)
       )
     )
-    .where(isNull(colors.deletedAt))
     .groupBy(colors.id, colors.slug, colors.title, colors.code);
   return filteredColors;
 }
@@ -97,9 +98,10 @@ export async function getFilteredBrandColors(filter?: BrandsFilters) {
       id: products.id,
     })
     .from(products)
-    .innerJoin(productCategories, eq(products.id, productCategories.productId))
-    .where(
+    .innerJoin(
+      productCategories,
       and(
+        eq(products.id, productCategories.productId),
         filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
         filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
         category && eq(productCategories.categoryId, category.id),
@@ -123,17 +125,17 @@ export async function getFilteredBrandColors(filter?: BrandsFilters) {
       and(
         eq(colors.id, productStocks.colorId),
         sizesIds && inArray(productStocks.sizeId, sizesIds),
-        productsIds && inArray(productStocks.productId, productsIds)
+        productsIds && inArray(productStocks.productId, productsIds),
+        isNull(colors.deletedAt)
       )
     )
-    .where(isNull(colors.deletedAt))
     .groupBy(colors.id, colors.slug, colors.title, colors.code);
   return filteredColors;
 }
 
 export async function getProductColors(productSlug: string) {
   const product = await db.query.products.findFirst({
-    where: and(and(eq(products.slug, productSlug), isNull(products.deletedAt)), eq(products.status, 'active')),
+    where: and(eq(products.slug, productSlug), isNull(products.deletedAt), eq(products.status, 'active')),
     columns: {
       id: true,
     },
@@ -152,11 +154,11 @@ export async function getProductColors(productSlug: string) {
         eq(colors.id, productStocks.colorId),
         isNull(productStocks.deletedAt),
         isNotNull(productStocks.sizeId),
-        eq(productStocks.productId, product.id)
+        eq(productStocks.productId, product.id),
+        isNull(colors.deletedAt)
       )
     )
-    .where(isNull(colors.deletedAt))
-    .groupBy(colors.id, colors.slug, colors.title, colors.code);
+    .groupBy(colors.slug, colors.title, colors.code);
 }
 
 export type ProductColors = Awaited<ReturnType<typeof getProductColors>>;

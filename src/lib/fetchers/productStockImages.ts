@@ -7,7 +7,7 @@ import { colors, products, productStockImages, productStocks } from '~/db/schema
 
 export async function getProductStockImages(productSlug: string, colorSlug?: string) {
   const product = await db.query.products.findFirst({
-    where: and(and(eq(products.slug, productSlug), isNull(products.deletedAt)), eq(products.status, 'active')),
+    where: and(eq(products.slug, productSlug), isNull(products.deletedAt), eq(products.status, 'active')),
     columns: {
       id: true,
     },
@@ -19,7 +19,7 @@ export async function getProductStockImages(productSlug: string, colorSlug?: str
       .from(productStockImages)
       .where(eq(productStockImages.productId, product.id));
   const color = await db.query.colors.findFirst({
-    where: and(and(eq(colors.slug, colorSlug), isNull(colors.deletedAt))),
+    where: and(eq(colors.slug, colorSlug), isNull(colors.deletedAt)),
     columns: {
       id: true,
     },

@@ -7,7 +7,7 @@ import { colors, products, productStocks, sizes } from '~/db/schema';
 
 export async function getProductStock(productSlug: string, colorSlug?: string) {
   const product = await db.query.products.findFirst({
-    where: and(and(eq(products.slug, productSlug), isNull(products.deletedAt)), eq(products.status, 'active')),
+    where: and(eq(products.slug, productSlug), isNull(products.deletedAt), eq(products.status, 'active')),
     columns: {
       id: true,
     },
@@ -15,7 +15,7 @@ export async function getProductStock(productSlug: string, colorSlug?: string) {
   if (!product) return [];
   if (!colorSlug) return [];
   const color = await db.query.colors.findFirst({
-    where: and(and(eq(colors.slug, colorSlug), isNull(colors.deletedAt))),
+    where: and(eq(colors.slug, colorSlug), isNull(colors.deletedAt)),
     columns: {
       id: true,
     },
@@ -26,14 +26,21 @@ export async function getProductStock(productSlug: string, colorSlug?: string) {
       id: productStocks.id,
       quantity: productStocks.quantity,
       price: productStocks.price,
+      color: productStocks.colorId,
       size: {
         title: sizes.title,
       },
     })
     .from(productStocks)
-    .innerJoin(sizes, and(eq(productStocks.sizeId, sizes.id), isNull(sizes.deletedAt)))
-    .where(
-      and(eq(productStocks.colorId, color.id), isNull(productStocks.deletedAt), eq(productStocks.productId, product.id))
+    .innerJoin(
+      sizes,
+      and(
+        eq(productStocks.sizeId, sizes.id),
+        isNull(sizes.deletedAt),
+        eq(productStocks.colorId, color.id),
+        isNull(productStocks.deletedAt),
+        eq(productStocks.productId, product.id)
+      )
     );
 }
 

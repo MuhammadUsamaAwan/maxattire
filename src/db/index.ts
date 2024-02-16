@@ -31,8 +31,6 @@ if (env.NODE_ENV === 'production') {
         host: env.DATABASE_HOST,
         port: Number(env.DATABASE_PORT),
         database: env.DATABASE_NAME,
-        waitForConnections: true,
-        connectionLimit: 10,
       }),
       { schema, mode: 'default' }
     );

@@ -26,6 +26,5 @@ export async function getProductReviews(slug: string) {
       },
     })
     .from(reviews)
-    .where(and(eq(reviews.productId, product.id), isNull(reviews.deletedAt)))
-    .leftJoin(users, eq(reviews.userId, users.id));
+    .leftJoin(users, and(eq(reviews.userId, users.id), eq(reviews.productId, product.id), isNull(reviews.deletedAt)));
 }

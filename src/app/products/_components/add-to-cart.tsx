@@ -2,36 +2,63 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
+import { addToCartAction } from '~/lib/actions/cart';
 import { type ProductColors } from '~/lib/fetchers/colors';
-import { type Product } from '~/lib/fetchers/products';
 import { type ProductStocks } from '~/lib/fetchers/productStock';
-import { formatPrice } from '~/lib/utils';
-import { Button } from '~/components/ui/button';
+import { catchError, formatPrice } from '~/lib/utils';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Input } from '~/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from '~/components/ui/tooltip';
 import { Icons } from '~/components/icons';
+import { LoadingButton } from '~/components/loading-button';
 
 type AddToCartProps = {
-  color: string | undefined;
-  product: Product;
+  productId: number;
   colors: ProductColors;
   stock: ProductStocks;
+  color: string | undefined;
+  isAuthed: boolean;
 };
 
-export function AddToCart({ color, colors, product, stock }: AddToCartProps) {
+export function AddToCart({ productId, stock, colors, color, isAuthed }: AddToCartProps) {
+  const router = useRouter();
+
   const [cartData, setCartData] = React.useState<
     {
       stockId: number;
       quantity: number;
     }[]
   >([]);
+  const [isPending, startTransition] = React.useTransition();
 
   React.useEffect(() => {
     setCartData([]);
   }, [stock]);
+
+  function addToCart() {
+    if (!isAuthed) {
+      router.push('/signin');
+    } else {
+      startTransition(async () => {
+        try {
+          await Promise.all(
+            cartData.map(async item => {
+              await addToCartAction({
+                productId,
+                productStockId: item.stockId,
+                quantity: item.quantity,
+              });
+            })
+          );
+        } catch (error) {
+          catchError(error);
+        }
+      });
+    }
+  }
 
   return (
     <div className='space-y-4'>
@@ -107,10 +134,15 @@ export function AddToCart({ color, colors, product, stock }: AddToCartProps) {
           </TableBody>
         </Table>
       )}
-      <Button size='lg'>
+      <LoadingButton
+        size='lg'
+        disabled={!cartData.length || cartData.some(c => c.quantity === 0)}
+        onClick={addToCart}
+        isLoading={isPending}
+      >
         <Icons.cart className='mr-2 size-5' />
         Add to Cart
-      </Button>
+      </LoadingButton>
     </div>
   );
 }

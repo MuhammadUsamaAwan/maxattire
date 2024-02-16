@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
+import { auth } from '~/lib/auth';
 import { getProductColors } from '~/lib/fetchers/colors';
 import { getProduct } from '~/lib/fetchers/products';
 import { getProductStock } from '~/lib/fetchers/productStock';
@@ -16,10 +17,11 @@ import { ProductImageCarousel } from '../_components/product-image-carousel';
 
 const getCachedData = unstable_cache(
   async (slug: string) => {
+    const sessionPromise = auth();
     const productPromise = getProduct(slug);
     const colorsPromise = getProductColors(slug);
     const reviewsPromise = getProductReviews(slug);
-    return Promise.all([productPromise, colorsPromise, reviewsPromise]);
+    return Promise.all([sessionPromise, productPromise, colorsPromise, reviewsPromise]);
   },
   [],
   {
@@ -49,7 +51,7 @@ type ProductPageProps = {
 };
 
 export default async function ProductPage({ params: { productSlug }, searchParams: { color } }: ProductPageProps) {
-  const [product, colors, reviews] = await getCachedData(productSlug);
+  const [session, product, colors, reviews] = await getCachedData(productSlug);
   const [stock, productImages] = await getCachedStockData(productSlug, color);
 
   const images = productImages
@@ -87,7 +89,13 @@ export default async function ProductPage({ params: { productSlug }, searchParam
             </div>
           </div>
           <Separator className='my-1.5' />
-          <AddToCart color={color} colors={colors} product={product} stock={stock} />
+          <AddToCart
+            productId={product.id}
+            colors={colors}
+            stock={stock}
+            color={color}
+            isAuthed={Boolean(session?.user)}
+          />
           <Separator className='mt-5' />
           <Tabs defaultValue='description'>
             <TabsList>

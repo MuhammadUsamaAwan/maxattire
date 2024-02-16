@@ -121,10 +121,10 @@ export async function getFilteredBrandSizes(filter?: BrandsFilters) {
       and(
         eq(sizes.id, productStocks.sizeId),
         colorsIds && inArray(productStocks.colorId, colorsIds),
-        productsIds && inArray(productStocks.productId, productsIds)
+        productsIds && inArray(productStocks.productId, productsIds),
+        isNull(sizes.deletedAt)
       )
     )
-    .where(isNull(sizes.deletedAt))
     .groupBy(sizes.id, sizes.slug, sizes.title);
   return filteredSizes;
 }

@@ -70,9 +70,10 @@ export async function getFilteredCategories(filter?: CategoriesFilters) {
       id: products.id,
     })
     .from(products)
-    .innerJoin(productStocks, eq(products.id, productStocks.productId))
-    .where(
+    .innerJoin(
+      productStocks,
       and(
+        eq(products.id, productStocks.productId),
         filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
         filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
         sizesIds && inArray(productStocks.sizeId, sizesIds),
@@ -141,9 +142,10 @@ export async function getFilteredBrandCategories(filter?: BrandsFilters) {
       id: products.id,
     })
     .from(products)
-    .innerJoin(productStocks, eq(products.id, productStocks.productId))
-    .where(
+    .innerJoin(
+      productStocks,
       and(
+        eq(products.id, productStocks.productId),
         filter?.maxPrice ? lt(products.sellPrice, filter.maxPrice) : undefined,
         filter?.minPrice ? gt(products.sellPrice, filter.minPrice) : undefined,
         sizesIds && inArray(productStocks.sizeId, sizesIds),
@@ -168,11 +170,7 @@ export async function getFilteredBrandCategories(filter?: BrandsFilters) {
       productCategories,
       and(
         eq(categories.id, productCategories.categoryId),
-        productsIds && inArray(productCategories.productId, productsIds)
-      )
-    )
-    .where(
-      and(
+        productsIds && inArray(productCategories.productId, productsIds),
         eq(categories.type, 'product'),
         isNull(categories.parentId),
         isNull(categories.deletedAt),
