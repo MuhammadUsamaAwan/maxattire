@@ -1,9 +1,10 @@
 import { unstable_cache } from 'next/cache';
 import { notFound } from 'next/navigation';
+import { ProductsSection } from '~/app/(landing)/_components/products-section';
 
 import { auth } from '~/lib/auth';
 import { getProductColors } from '~/lib/fetchers/colors';
-import { getProduct } from '~/lib/fetchers/products';
+import { getProduct, getRelatedProducts } from '~/lib/fetchers/products';
 import { getProductStock } from '~/lib/fetchers/productStock';
 import { getProductStockImages } from '~/lib/fetchers/productStockImages';
 import { getProductReviews } from '~/lib/fetchers/reviews';
@@ -22,7 +23,8 @@ const getCachedData = unstable_cache(
     const productPromise = getProduct(slug);
     const colorsPromise = getProductColors(slug);
     const reviewsPromise = getProductReviews(slug);
-    return Promise.all([sessionPromise, productPromise, colorsPromise, reviewsPromise]);
+    const relatedProductsPromise = getRelatedProducts(slug);
+    return Promise.all([sessionPromise, productPromise, colorsPromise, reviewsPromise, relatedProductsPromise]);
   },
   [],
   {
@@ -52,7 +54,7 @@ type ProductPageProps = {
 };
 
 export default async function ProductPage({ params: { productSlug }, searchParams: { color } }: ProductPageProps) {
-  const [session, product, colors, reviews] = await getCachedData(productSlug);
+  const [session, product, colors, reviews, relatedProducts] = await getCachedData(productSlug);
   const [stock, productImages] = await getCachedStockData(productSlug, color);
 
   const images = productImages
@@ -115,6 +117,12 @@ export default async function ProductPage({ params: { productSlug }, searchParam
           </Tabs>
         </div>
       </div>
+      <ProductsSection
+        products={relatedProducts}
+        title='Related Products'
+        description='Other products you might like'
+        className='pb-0 pt-6 md:pt-10'
+      />
       <ProductReviews reviews={reviews} />
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { db } from '~/db';
 import type { BrandsFilters, CategoriesFilters } from '~/types';
-import { and, asc, desc, eq, gt, inArray, isNull, lt } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, inArray, isNull, lt, ne } from 'drizzle-orm';
 
 import { categories, colors, productCategories, products, productStocks, sizes, stores } from '~/db/schema';
 
@@ -364,3 +364,98 @@ export async function getProduct(slug: string) {
 }
 
 export type Product = NonNullable<Awaited<ReturnType<typeof getProduct>>>;
+
+export async function getRelatedProducts(slug: string) {
+  const product = await db.query.products.findFirst({
+    columns: {
+      id: true,
+    },
+    where: eq(products.slug, slug),
+  });
+  if (!product) {
+    return [];
+  }
+  const productCategoriesIds = await db.query.productCategories
+    .findMany({
+      columns: {
+        categoryId: true,
+      },
+      where: eq(productCategories.productId, product.id),
+    })
+    .then(categories => categories.map(category => category.categoryId));
+  const productIds = await db.query.productCategories
+    .findMany({
+      columns: {
+        productId: true,
+      },
+      where: and(
+        inArray(productCategories.categoryId, productCategoriesIds),
+        ne(productCategories.productId, product.id)
+      ),
+    })
+    .then(products => products.map(product => product.productId));
+  if (!productIds.length) {
+    return db.query.products.findMany({
+      columns: {
+        title: true,
+        slug: true,
+        thumbnail: true,
+        sellPrice: true,
+        discount: true,
+      },
+      with: {
+        productStocks: {
+          columns: {
+            id: true,
+          },
+          with: {
+            color: {
+              columns: {
+                title: true,
+                code: true,
+              },
+            },
+          },
+        },
+        reviews: {
+          columns: {
+            rating: true,
+          },
+        },
+      },
+      limit: 8,
+      where: and(isNull(products.deletedAt), eq(products.status, 'active')),
+    });
+  }
+  return db.query.products.findMany({
+    columns: {
+      title: true,
+      slug: true,
+      thumbnail: true,
+      sellPrice: true,
+      discount: true,
+    },
+    with: {
+      productStocks: {
+        columns: {
+          id: true,
+        },
+        with: {
+          color: {
+            columns: {
+              title: true,
+              code: true,
+            },
+          },
+        },
+      },
+      reviews: {
+        columns: {
+          rating: true,
+        },
+      },
+    },
+    limit: 8,
+    where: and(isNull(products.deletedAt), eq(products.status, 'active'), inArray(products.id, productIds)),
+  });
+}
