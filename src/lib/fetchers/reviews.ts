@@ -28,3 +28,5 @@ export async function getProductReviews(slug: string) {
     .from(reviews)
     .leftJoin(users, and(eq(reviews.userId, users.id), eq(reviews.productId, product.id), isNull(reviews.deletedAt)));
 }
+
+export type ProductReviews = Awaited<ReturnType<typeof getProductReviews>>;

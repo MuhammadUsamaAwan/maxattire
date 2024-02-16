@@ -14,6 +14,7 @@ import { Rating } from '~/components/rating';
 
 import { AddToCart } from '../_components/add-to-cart';
 import { ProductImageCarousel } from '../_components/product-image-carousel';
+import { ProductReviews } from '../_components/product-reviews';
 
 const getCachedData = unstable_cache(
   async (slug: string) => {
@@ -114,6 +115,7 @@ export default async function ProductPage({ params: { productSlug }, searchParam
           </Tabs>
         </div>
       </div>
+      <ProductReviews reviews={reviews} />
     </div>
   );
 }
