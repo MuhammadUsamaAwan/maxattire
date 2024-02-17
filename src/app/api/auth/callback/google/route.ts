@@ -1,3 +1,4 @@
+import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { db } from '~/db';
 import { and, eq, isNull } from 'drizzle-orm';
@@ -70,6 +71,7 @@ export async function GET(request: Request) {
       throw new Error('User not found');
     }
     await setAccessToken({ id: user.id, email: user.email, name: user.name, image: user.image });
+    revalidateTag('cart');
     return redirect('/');
   }
 }

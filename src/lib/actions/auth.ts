@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/require-await */
 'use server';
 
+import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { db } from '~/db';
@@ -41,6 +42,7 @@ export async function signInWithCredentials(rawInput: z.infer<typeof signInSchem
     throw new Error('User is blocked');
   }
   await setAccessToken({ id: user.id, email: user.email, name: user.name, image: user.image });
+  revalidateTag('cart');
   return redirect('/');
 }
 
@@ -66,6 +68,7 @@ export async function signUpWithCredentials(rawInput: z.infer<typeof signUpSchem
       throw new Error('User not found');
     }
     await setAccessToken({ id: user.id, email: user.email, name: user.name, image: user.image });
+    revalidateTag('cart');
     return redirect('/');
   } catch (error) {
     if (
@@ -88,6 +91,7 @@ export async function signOut() {
     sameSite: 'lax',
     maxAge: 0,
   });
+  revalidateTag('cart');
 }
 
 export async function auth() {

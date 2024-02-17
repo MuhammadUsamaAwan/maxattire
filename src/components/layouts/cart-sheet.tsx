@@ -16,7 +16,7 @@ const getCachedData = unstable_cache(
   },
   [],
   {
-    revalidate: false,
+    revalidate: 1,
     tags: ['cart'],
   }
 );
