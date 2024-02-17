@@ -1,20 +1,32 @@
 'use client';
 
+import Image from 'next/image';
 import Autoplay from 'embla-carousel-autoplay';
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '~/components/ui/carousel';
 
 export function Hero() {
   return (
-    <Carousel className='w-full' plugins={[Autoplay()]}>
+    <Carousel plugins={[Autoplay()]}>
       <CarouselContent>
-        {Array.from({ length: 5 }).map((_, index) => (
-          <CarouselItem key={index}>
-            <div className='flex h-[500px] items-center justify-center border-b p-6'>
-              <span className='text-4xl font-semibold'>{index + 1}</span>
-            </div>
-          </CarouselItem>
-        ))}
+        <CarouselItem>
+          <Image
+            src='/images/hero1.jpeg'
+            alt='hero'
+            width={1024}
+            height={630}
+            className='h-auto max-h-[500px] w-screen'
+          />
+        </CarouselItem>
+        <CarouselItem>
+          <Image
+            src='/images/hero2.jpeg'
+            alt='hero'
+            width={1024}
+            height={585}
+            className='h-auto max-h-[500px] w-screen'
+          />
+        </CarouselItem>
       </CarouselContent>
       <CarouselPrevious className='left-4' />
       <CarouselNext className='right-4' />
