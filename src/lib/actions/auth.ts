@@ -18,6 +18,14 @@ export async function signInWithCredentials(rawInput: z.infer<typeof signInSchem
   const { email, password } = signInSchema.parse(rawInput);
   const user = await db.query.users.findFirst({
     where: and(eq(users.email, email), isNull(users.deletedAt)),
+    columns: {
+      id: true,
+      email: true,
+      password: true,
+      status: true,
+      image: true,
+      name: true,
+    },
   });
   if (!user || !user.password) {
     throw new Error('Invalid email or password');
@@ -36,6 +44,7 @@ export async function signInWithCredentials(rawInput: z.infer<typeof signInSchem
     id: String(user.id),
     email: user.email,
     image: user.image,
+    name: user.name,
   });
 }
 

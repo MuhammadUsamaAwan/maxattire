@@ -1005,7 +1005,7 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
   }),
 }));
 
-export const productStockRelations = relations(productStocks, ({ one, many }) => ({
+export const productStocksRelations = relations(productStocks, ({ one, many }) => ({
   product: one(products, {
     fields: [productStocks.productId],
     references: [products.id],
@@ -1019,6 +1019,7 @@ export const productStockRelations = relations(productStocks, ({ one, many }) =>
     references: [sizes.id],
   }),
   images: many(productStockImages),
+  carts: many(carts),
 }));
 
 export const colorsRelations = relations(colors, ({ many }) => ({
@@ -1053,5 +1054,20 @@ export const productSpecsRelations = relations(productSpecs, ({ one }) => ({
   size: one(sizes, {
     fields: [productSpecs.sizeId],
     references: [sizes.id],
+  }),
+}));
+
+export const cartsRelations = relations(carts, ({ one }) => ({
+  user: one(users, {
+    fields: [carts.userId],
+    references: [users.id],
+  }),
+  productStock: one(productStocks, {
+    fields: [carts.productStockId],
+    references: [productStocks.id],
+  }),
+  product: one(products, {
+    fields: [carts.productId],
+    references: [products.id],
   }),
 }));

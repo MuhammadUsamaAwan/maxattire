@@ -30,8 +30,6 @@ export const {
   callbacks: {
     async signIn({ account, profile }) {
       if (account?.provider === 'google') {
-        console.log('account', account);
-        console.log('profile', profile);
         const email = profile?.email;
         if (!email) {
           throw new Error('No email found in profile');
