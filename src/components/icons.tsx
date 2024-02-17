@@ -12,6 +12,7 @@ import {
   DashboardIcon,
   DotFilledIcon,
   DotsHorizontalIcon,
+  DotsVerticalIcon,
   ExitIcon,
   EyeNoneIcon,
   EyeOpenIcon,
@@ -22,7 +23,7 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@radix-ui/react-icons';
-import { Loader2, ShoppingCart } from 'lucide-react';
+import { CircleUserRoundIcon, DollarSignIcon, Loader2Icon, ShoppingCartIcon } from 'lucide-react';
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
 import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { FaGoogle, FaXTwitter } from 'react-icons/fa6';
@@ -41,6 +42,7 @@ export const Icons = {
   dashboard: DashboardIcon,
   dot: DotFilledIcon,
   dotsHorizontal: DotsHorizontalIcon,
+  dotsVertical: DotsVerticalIcon,
   logout: ExitIcon,
   eyeNone: EyeNoneIcon,
   eyeOpen: EyeOpenIcon,
@@ -50,8 +52,10 @@ export const Icons = {
   minus: MinusIcon,
   plus: PlusIcon,
   trash: TrashIcon,
-  spinner: Loader2,
-  cart: ShoppingCart,
+  account: CircleUserRoundIcon,
+  dollar: DollarSignIcon,
+  spinner: Loader2Icon,
+  cart: ShoppingCartIcon,
   star: BsStar,
   starFill: BsStarFill,
   starHalf: BsStarHalf,

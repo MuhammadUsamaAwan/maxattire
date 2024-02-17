@@ -1071,3 +1071,51 @@ export const cartsRelations = relations(carts, ({ one }) => ({
     references: [products.id],
   }),
 }));
+
+export const ordersRelations = relations(orders, ({ one, many }) => ({
+  user: one(users, {
+    fields: [orders.userId],
+    references: [users.id],
+  }),
+  address: one(addresses, {
+    fields: [orders.addressId],
+    references: [addresses.id],
+  }),
+  paymentType: one(paymentTypes, {
+    fields: [orders.paymentTypeId],
+    references: [paymentTypes.id],
+  }),
+  orderProducts: many(orderProducts),
+  orderStatuses: many(orderStatuses),
+  orderDesignFiles: many(orderDesignFiles),
+}));
+
+export const orderStatusesRelations = relations(orderStatuses, ({ one }) => ({
+  order: one(orders, {
+    fields: [orderStatuses.orderId],
+    references: [orders.id],
+  }),
+}));
+
+export const orderProductsRelations = relations(orderProducts, ({ one }) => ({
+  order: one(orders, {
+    fields: [orderProducts.orderId],
+    references: [orders.id],
+  }),
+  product: one(products, {
+    fields: [orderProducts.productId],
+    references: [products.id],
+  }),
+  productStock: one(productStocks, {
+    fields: [orderProducts.productStockId],
+    references: [productStocks.id],
+  }),
+  size: one(sizes, {
+    fields: [orderProducts.sizeId],
+    references: [sizes.id],
+  }),
+  color: one(colors, {
+    fields: [orderProducts.colorId],
+    references: [colors.id],
+  }),
+}));
