@@ -1,7 +1,10 @@
+import type { JWTPayload } from '~/types';
 import { clsx, type ClassValue } from 'clsx';
+import { jwtVerify } from 'jose';
 import { twMerge } from 'tailwind-merge';
 import { ZodError } from 'zod';
 
+import { env } from '~/env';
 import { toast } from '~/components/ui/toaster';
 
 export function cn(...inputs: ClassValue[]) {
@@ -46,7 +49,7 @@ export function getInitials(name: string | null | undefined) {
   return (
     name
       ?.split(' ')
-      .map(n => n[0])
+      .map(n => n[0]?.toUpperCase())
       .join('') ?? ''
   );
 }
@@ -62,4 +65,14 @@ export function getAvgRating(
 ) {
   if (reviews.length > 0) return reviews.reduce((acc, curr) => acc + (curr.rating ?? 0), 0) / reviews.length;
   else return 0;
+}
+
+export async function verifyJWT(token: string | undefined) {
+  if (!token) return null;
+  try {
+    const user = await jwtVerify(token, new TextEncoder().encode(env.AUTH_SECRET));
+    return user.payload as JWTPayload;
+  } catch (error) {
+    return null;
+  }
 }

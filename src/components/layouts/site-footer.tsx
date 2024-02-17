@@ -97,7 +97,7 @@ export function SiteFooter({ categories, links }: SiteFooterProps) {
           <section
             id='footer-links'
             aria-labelledby='footer-links-heading'
-            className='xxs:grid-cols-2 grid flex-1 grid-cols-1 gap-10 sm:grid-cols-5'
+            className='grid flex-1 grid-cols-1 gap-10 xxs:grid-cols-2 sm:grid-cols-5'
           >
             {footerLinks.map(item => (
               <div key={item.title} className='space-y-1.5'>

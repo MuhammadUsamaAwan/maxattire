@@ -2,7 +2,7 @@ import { unstable_cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { ProductsSection } from '~/app/(landing)/_components/products-section';
 
-import { auth } from '~/lib/auth';
+import { auth } from '~/lib/actions/auth';
 import { getProductColors } from '~/lib/fetchers/colors';
 import { getProductStock } from '~/lib/fetchers/product-stock';
 import { getProductStockImages } from '~/lib/fetchers/product-stock-images';
@@ -93,13 +93,7 @@ export default async function ProductPage({ params: { productSlug }, searchParam
             </div>
           </div>
           <Separator className='my-1.5' />
-          <AddToCart
-            productId={product.id}
-            colors={colors}
-            stock={stock}
-            color={color}
-            isAuthed={Boolean(session?.user)}
-          />
+          <AddToCart productId={product.id} colors={colors} stock={stock} color={color} isAuthed={Boolean(session)} />
           <Separator className='mt-5' />
           <Tabs defaultValue='description'>
             <TabsList>

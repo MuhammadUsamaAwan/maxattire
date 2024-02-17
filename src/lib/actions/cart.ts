@@ -5,7 +5,7 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { type z } from 'zod';
 
 import { carts, products } from '~/db/schema';
-import { auth } from '~/lib/auth';
+import { auth } from '~/lib/actions/auth';
 import { addToCartSchema, removeCartItemSchema, updateCartItemSchema } from '~/lib/validations/cart';
 
 export async function addToCartAction(rawInput: z.infer<typeof addToCartSchema>) {
@@ -25,7 +25,7 @@ export async function addToCartAction(rawInput: z.infer<typeof addToCartSchema>)
     },
   });
   const [session, productStock] = await Promise.all([sessionPromise, productStockPromise]);
-  if (!session || !session.user) {
+  if (!session) {
     throw new Error('Unauthorized');
   }
   if (!productStock) {
@@ -35,7 +35,7 @@ export async function addToCartAction(rawInput: z.infer<typeof addToCartSchema>)
     throw new Error('Product Stock not enough');
   }
   await db.insert(carts).values({
-    userId: Number(session.user.id),
+    userId: session.id,
     productId,
     productStockId,
     quantity,
@@ -45,20 +45,20 @@ export async function addToCartAction(rawInput: z.infer<typeof addToCartSchema>)
 export async function removeCartItem(rawInput: z.infer<typeof removeCartItemSchema>) {
   const { id } = removeCartItemSchema.parse(rawInput);
   const session = await auth();
-  if (!session || !session.user) {
+  if (!session || session.id) {
     throw new Error('Unauthorized');
   }
-  await db.delete(carts).where(and(eq(carts.id, id), eq(carts.userId, Number(session.user.id))));
+  await db.delete(carts).where(and(eq(carts.id, id), eq(carts.userId, session.id)));
 }
 
 export async function updateCartItem(rawInput: z.infer<typeof updateCartItemSchema>) {
   const { id, quantity } = updateCartItemSchema.parse(rawInput);
   const session = await auth();
-  if (!session || !session.user) {
+  if (!session || !session.id) {
     throw new Error('Unauthorized');
   }
   await db
     .update(carts)
     .set({ quantity })
-    .where(and(eq(carts.id, id), eq(carts.userId, Number(session.user.id))));
+    .where(and(eq(carts.id, id), eq(carts.userId, Number(session.id))));
 }

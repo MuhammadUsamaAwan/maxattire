@@ -10,10 +10,11 @@ export const env = createEnv({
     DATABASE_PORT: z.string(),
     DATABASE_NAME: z.string(),
     AUTH_SECRET: z.string(),
-    GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
   },
-  client: {},
+  client: {
+    NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.string(),
+  },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     DATABASE_USER: process.env.DATABASE_USER,
@@ -22,8 +23,8 @@ export const env = createEnv({
     DATABASE_PORT: process.env.DATABASE_PORT,
     DATABASE_NAME: process.env.DATABASE_NAME,
     AUTH_SECRET: process.env.AUTH_SECRET,
-    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    NEXT_PUBLIC_GOOGLE_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,

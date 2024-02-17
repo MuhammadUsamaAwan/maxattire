@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import { unstable_cache } from 'next/cache';
 
 import { siteConfig } from '~/config/site';
-import { auth } from '~/lib/auth';
 import { getBrands } from '~/lib/fetchers/brands';
 import { getCategories } from '~/lib/fetchers/categories';
 import { getLinks } from '~/lib/fetchers/settings';
@@ -16,6 +15,8 @@ import { TailwindIndicator } from '~/components/layouts/tailwind-indicator';
 import { ThemeProvider } from '~/components/layouts/theme-provider';
 
 import '~/styles/globals.css';
+
+import { auth } from '~/lib/actions/auth';
 
 export const metadata: Metadata = {
   metadataBase: new URL(absoluteUrl()),

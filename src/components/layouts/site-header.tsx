@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { type Session } from 'next-auth';
+import type { JWTPayload } from '~/types';
 
 import { signOut } from '~/lib/actions/auth';
 import { type Brands } from '~/lib/fetchers/brands';
@@ -24,7 +24,7 @@ import { ProductSearch } from '~/components/layouts/products-search';
 
 type SiteHeaderProps = {
   categories: Categories;
-  session: Session | null;
+  session: JWTPayload | null;
   brands: Brands;
 };
 
@@ -43,16 +43,16 @@ export function SiteHeader({ categories, session, brands }: SiteHeaderProps) {
                 <DropdownMenuTrigger asChild>
                   <Button variant='secondary' className='relative size-8 rounded-full'>
                     <Avatar className='size-8'>
-                      <AvatarImage src={session?.user?.image ?? ''} alt={session?.user?.name ?? ''} />
-                      <AvatarFallback>{getInitials(session?.user?.name)}</AvatarFallback>
+                      <AvatarImage src={session.image ?? ''} alt={session.name ?? ''} />
+                      <AvatarFallback>{getInitials(session.name ?? session.email)}</AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className='w-56' align='end' forceMount>
                   <DropdownMenuLabel className='font-normal'>
                     <div className='flex flex-col space-y-1'>
-                      <p className='text-sm font-medium leading-none'>{session?.user?.name}</p>
-                      <p className='text-xs leading-none text-muted-foreground'>{session?.user?.email}</p>
+                      <p className='text-sm font-medium leading-none'>{session.name}</p>
+                      <p className='text-xs leading-none text-muted-foreground'>{session.email}</p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />

@@ -2,7 +2,7 @@ import { type Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { auth } from '~/lib/auth';
+import { auth } from '~/lib/actions/auth';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
 
 import { OAuthSignIn } from '../_components/oauth-signin';
