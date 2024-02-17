@@ -10,7 +10,7 @@ export async function getProductReviews(slug: string) {
     columns: {
       id: true,
     },
-    where: eq(products.slug, slug),
+    where: and(eq(products.slug, slug), isNull(products.deletedAt), eq(products.status, 'active')),
   });
   if (!product) return [];
   return db

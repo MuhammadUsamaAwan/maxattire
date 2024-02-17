@@ -1027,11 +1027,31 @@ export const colorsRelations = relations(colors, ({ many }) => ({
 
 export const sizeRelations = relations(sizes, ({ many }) => ({
   productStocks: many(productStocks),
+  productSpecs: many(productSpecs),
 }));
 
 export const productStockImagesRelations = relations(productStockImages, ({ one }) => ({
   productStock: one(productStocks, {
     fields: [productStockImages.productStockId],
     references: [productStocks.id],
+  }),
+}));
+
+export const productSpecTypesRelations = relations(productSpecTypes, ({ one, many }) => ({
+  product: one(products, {
+    fields: [productSpecTypes.productId],
+    references: [products.id],
+  }),
+  productSpecs: many(productSpecs),
+}));
+
+export const productSpecsRelations = relations(productSpecs, ({ one }) => ({
+  productSpecType: one(productSpecTypes, {
+    fields: [productSpecs.productSpecTypeId],
+    references: [productSpecTypes.id],
+  }),
+  size: one(sizes, {
+    fields: [productSpecs.sizeId],
+    references: [sizes.id],
   }),
 }));

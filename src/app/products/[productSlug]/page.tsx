@@ -4,9 +4,9 @@ import { ProductsSection } from '~/app/(landing)/_components/products-section';
 
 import { auth } from '~/lib/auth';
 import { getProductColors } from '~/lib/fetchers/colors';
+import { getProductStock } from '~/lib/fetchers/product-stock';
+import { getProductStockImages } from '~/lib/fetchers/product-stock-images';
 import { getProduct, getRelatedProducts } from '~/lib/fetchers/products';
-import { getProductStock } from '~/lib/fetchers/productStock';
-import { getProductStockImages } from '~/lib/fetchers/productStockImages';
 import { getProductReviews } from '~/lib/fetchers/reviews';
 import { formatPrice, getAvgRating } from '~/lib/utils';
 import { Separator } from '~/components/ui/separator';
@@ -16,6 +16,7 @@ import { Rating } from '~/components/rating';
 import { AddToCart } from '../_components/add-to-cart';
 import { ProductImageCarousel } from '../_components/product-image-carousel';
 import { ProductReviews } from '../_components/product-reviews';
+import { SizeChart } from '../_components/size-chart';
 
 const getCachedData = unstable_cache(
   async (slug: string) => {
@@ -113,7 +114,9 @@ export default async function ProductPage({ params: { productSlug }, searchParam
                 }}
               />
             </TabsContent>
-            <TabsContent value='sizeChart'>Size Chart Here</TabsContent>
+            <TabsContent value='sizeChart'>
+              <SizeChart slug={productSlug} />
+            </TabsContent>
           </Tabs>
         </div>
       </div>

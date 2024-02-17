@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 import { addToCartAction } from '~/lib/actions/cart';
 import { type ProductColors } from '~/lib/fetchers/colors';
-import { type ProductStocks } from '~/lib/fetchers/productStock';
+import { type ProductStocks } from '~/lib/fetchers/product-stock';
 import { catchError, formatPrice } from '~/lib/utils';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Input } from '~/components/ui/input';
