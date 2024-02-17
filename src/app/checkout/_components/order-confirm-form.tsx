@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { type z } from 'zod';
 
 import { addAddress } from '~/lib/actions/addresses';
+import { createOrder } from '~/lib/actions/order';
 import { updateUser } from '~/lib/actions/user';
 import { type Addresses } from '~/lib/fetchers/addresses';
 import { orderConfirmSchema } from '~/lib/validations/order';
@@ -63,10 +64,10 @@ export function OrderConfirmForm({ session, addresses }: OrderConfirmFormProps) 
         phone,
       });
     }
-    // const orderId = await createOrder({
-    //   addressId: addressId ?? Number(existingAddress),
-    // });
-    // router.push(`/payment/${orderId}`);
+    const orderId = await createOrder({
+      addressId: addressId ?? Number(existingAddress),
+    });
+    router.push(`/payment/${orderId}`);
   }
 
   return (

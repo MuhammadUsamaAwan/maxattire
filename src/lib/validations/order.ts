@@ -73,3 +73,7 @@ export const orderConfirmSchema = z
       path: ['city'],
     }
   );
+
+export const orderCreateSchema = z.object({
+  addressId: z.number(),
+});
