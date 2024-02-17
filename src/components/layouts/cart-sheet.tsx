@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import Link from 'next/link';
 
 import { getCart } from '~/lib/fetchers/cart';
@@ -7,11 +8,21 @@ import { Button, buttonVariants } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '~/components/ui/sheet';
 import { Icons } from '~/components/icons';
+import { CartItems } from '~/components/layouts/cart-items';
 
-import { CartItems } from './cart-items';
+const getCachedData = unstable_cache(
+  async () => {
+    return getCart();
+  },
+  [],
+  {
+    revalidate: false,
+    tags: ['cart'],
+  }
+);
 
 export async function CartSheet() {
-  const cartItems = await getCart();
+  const cartItems = await getCachedData();
   const itemCount = cartItems?.reduce((total, item) => total + (item.quantity ?? 0), 0) ?? 0;
 
   return (
