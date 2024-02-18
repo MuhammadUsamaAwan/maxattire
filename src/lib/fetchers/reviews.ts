@@ -4,6 +4,7 @@ import { db } from '~/db';
 import { and, eq, isNull } from 'drizzle-orm';
 
 import { products, reviews, users } from '~/db/schema';
+import { auth } from '~/lib/actions/auth';
 
 export async function getProductReviews(slug: string) {
   const product = await db.query.products.findFirst({
@@ -30,3 +31,30 @@ export async function getProductReviews(slug: string) {
 }
 
 export type ProductReviews = Awaited<ReturnType<typeof getProductReviews>>;
+
+export async function getReview(orderProductId: number, productId: number) {
+  const session = await auth();
+  if (!session) return null;
+  return db.query.reviews.findFirst({
+    where: and(
+      eq(reviews.orderProductId, orderProductId),
+      eq(reviews.productId, productId),
+      eq(reviews.userId, session.id)
+    ),
+    columns: {
+      id: true,
+      rating: true,
+      comment: true,
+      createdAt: true,
+    },
+    with: {
+      user: {
+        columns: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+    },
+  });
+}

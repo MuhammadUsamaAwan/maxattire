@@ -29,7 +29,7 @@ type ProductReviewProps = {
   review: ProductReviews[number];
 };
 
-function ProductReview({ review }: ProductReviewProps) {
+export function ProductReview({ review }: ProductReviewProps) {
   return (
     <div key={review.id} className='space-y-1'>
       <div className='flex items-center space-x-2'>

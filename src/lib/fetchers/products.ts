@@ -459,3 +459,13 @@ export async function getRelatedProducts(slug: string) {
     where: and(isNull(products.deletedAt), eq(products.status, 'active'), inArray(products.id, productIds)),
   });
 }
+
+export async function getProductSlugTitle(id: number) {
+  return db.query.products.findFirst({
+    where: eq(products.id, id),
+    columns: {
+      title: true,
+      slug: true,
+    },
+  });
+}

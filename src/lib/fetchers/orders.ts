@@ -28,6 +28,7 @@ export async function getOrder(code: string) {
       },
       orderProducts: {
         columns: {
+          id: true,
           price: true,
           quantity: true,
         },
@@ -44,6 +45,7 @@ export async function getOrder(code: string) {
           },
           product: {
             columns: {
+              id: true,
               title: true,
               slug: true,
               thumbnail: true,

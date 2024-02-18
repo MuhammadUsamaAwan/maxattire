@@ -9,9 +9,10 @@ import { Icons } from '~/components/icons';
 
 type Props = {
   order: Order;
+  reviewOrder?: string | null;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-export function OrderItems({ order, className, ...props }: Props) {
+export function OrderItems({ order, reviewOrder, className, ...props }: Props) {
   return (
     <ScrollArea className='h-full'>
       <div className={cn('flex w-full flex-col gap-5 pr-6', className)} {...props}>
@@ -45,6 +46,14 @@ export function OrderItems({ order, className, ...props }: Props) {
                   <span className='line-clamp-1 text-xs text-muted-foreground'>
                     {item.color?.title} / {item.size?.title}
                   </span>
+                  {reviewOrder && (
+                    <Link
+                      href={`/dashboard/orders/${reviewOrder}/${item.id}/${item.product?.id}`}
+                      className='line-clamp-1 text-sm font-medium text-primary underline-offset-4 hover:underline'
+                    >
+                      Write a review
+                    </Link>
+                  )}
                 </div>
               </div>
               <div className='flex flex-col space-y-1 font-medium'>
