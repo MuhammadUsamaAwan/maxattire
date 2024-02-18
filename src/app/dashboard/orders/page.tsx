@@ -36,6 +36,8 @@ export default async function OrdersPage() {
     redirect('/signin');
   }
 
+  console.log(JSON.stringify(orders, null, 2));
+
   return (
     <div className='grid items-center gap-8 pb-8 pt-6 md:py-8'>
       <div className='grid gap-1'>
@@ -62,7 +64,7 @@ export default async function OrdersPage() {
                 <TableCell>{order.code}</TableCell>
                 <TableCell>{format(order.createdAt ? new Date(order.createdAt) : new Date(), 'dd MMM yy')}</TableCell>
                 <TableCell>
-                  <OrderStatusBadge status={order.orderStatuses[0]?.status} />
+                  <OrderStatusBadge status={order.orderStatuses[order.orderStatuses.length - 1]?.status} />
                 </TableCell>
                 <TableCell>{order.grandTotal}</TableCell>
                 <TableCell>

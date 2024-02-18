@@ -1,28 +1,47 @@
 'use client';
 
+import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { type z } from 'zod';
 
+import { payment } from '~/lib/actions/payment';
+import { catchError } from '~/lib/utils';
 import { paymentSchema } from '~/lib/validations/payment';
-import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
+import { LoadingButton } from '~/components/loading-button';
 
-export function PaymentForm() {
+type PaymentFormProps = {
+  orderId: number;
+};
+
+export function PaymentForm({ orderId }: PaymentFormProps) {
+  const router = useRouter();
+  const [isPending, startTransition] = React.useTransition();
+
   const form = useForm<z.infer<typeof paymentSchema>>({
     resolver: zodResolver(paymentSchema),
     defaultValues: {
       name: '',
       card: '',
       cvc: '',
-      month: '',
-      year: '',
+      expiry: '',
     },
   });
 
-  async function onSubmit({ name, card, cvc, month, year }: z.infer<typeof paymentSchema>) {}
+  function onSubmit(input: z.infer<typeof paymentSchema>) {
+    startTransition(async () => {
+      try {
+        await payment(input, orderId);
+        void router.replace('/dashboard/orders');
+      } catch (error) {
+        catchError(error);
+      }
+    });
+  }
 
   return (
     <Form {...form}>
@@ -40,7 +59,7 @@ export function PaymentForm() {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder='Name' {...field} />
+                    <Input placeholder='Name on card' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -53,34 +72,21 @@ export function PaymentForm() {
                 <FormItem>
                   <FormLabel>Card</FormLabel>
                   <FormControl>
-                    <Input placeholder='Card' inputMode='numeric' pattern='[0-9]{16}' {...field} />
+                    <Input placeholder='16 Digit Card Number' inputMode='numeric' pattern='[0-9]{16}' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className='grid grid-cols-3 gap-2'>
+            <div className='grid grid-cols-2 gap-2'>
               <FormField
                 control={form.control}
-                name='month'
+                name='expiry'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Expire Month</FormLabel>
+                    <FormLabel>Expiry</FormLabel>
                     <FormControl>
-                      <Input placeholder='Expire Month' inputMode='numeric' pattern='1[0-2]|[1-9]' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='year'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Expire Year</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Expire Year' inputMode='numeric' pattern='2[0-9]{3}' {...field} />
+                      <Input placeholder='MMYY' inputMode='numeric' pattern='[0-9]{4}' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -102,9 +108,9 @@ export function PaymentForm() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button className='ml-auto' type='submit'>
-              Save
-            </Button>
+            <LoadingButton isLoading={isPending} className='ml-auto' type='submit'>
+              Submit
+            </LoadingButton>
           </CardFooter>
         </Card>
       </form>

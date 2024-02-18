@@ -24,7 +24,6 @@ export async function getOrder(code: string) {
         columns: {
           status: true,
         },
-        orderBy: desc(orders.createdAt),
       },
       orderProducts: {
         columns: {
@@ -85,7 +84,6 @@ export async function getOrders() {
         columns: {
           status: true,
         },
-        orderBy: desc(orders.createdAt),
       },
     },
     orderBy: desc(orders.createdAt),
@@ -110,7 +108,6 @@ export async function getUnPaidOrder(id: number) {
         columns: {
           status: true,
         },
-        orderBy: desc(orders.createdAt),
       },
       orderProducts: {
         columns: {

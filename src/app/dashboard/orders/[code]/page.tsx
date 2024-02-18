@@ -55,17 +55,22 @@ export default async function OrderDetailPage({ params: { code } }: OrderDetailP
               <h2>Order# {code}</h2>
               {order?.orderStatuses[0]?.status === 'AWAITING_PAYMENT' ? (
                 <Link href={`/payment/${order.id}`}>
-                  <OrderStatusBadge status={order.orderStatuses[0]?.status} />
+                  <OrderStatusBadge status={order.orderStatuses[order.orderStatuses.length - 1]?.status} />
                 </Link>
               ) : (
-                <OrderStatusBadge status={order.orderStatuses[0]?.status} />
+                <OrderStatusBadge status={order.orderStatuses[order.orderStatuses.length - 1]?.status} />
               )}
             </div>
           </CardTitle>
         </CardHeader>
         <Separator className='mb-4' />
         <CardContent className='pb-6 pl-6 pr-0'>
-          <OrderItems order={order} reviewOrder={order.orderStatuses[0]?.status === 'AWAITING_PAYMENT' ? null : code} />
+          <OrderItems
+            order={order}
+            reviewOrder={
+              order.orderStatuses[order.orderStatuses.length - 1]?.status === 'AWAITING_PAYMENT' ? null : code
+            }
+          />
         </CardContent>
         <Separator className='mb-4' />
         <CardFooter className='space-x-4'>

@@ -166,6 +166,9 @@ devDependencies:
   '@total-typescript/ts-reset':
     specifier: ^0.5.1
     version: 0.5.1
+  '@types/authorizenet':
+    specifier: ^1.0.2
+    version: 1.0.2
   '@types/bcryptjs':
     specifier: ^2.4.6
     version: 2.4.6
@@ -2551,6 +2554,10 @@ packages:
 
   /@total-typescript/ts-reset@0.5.1:
     resolution: {integrity: sha512-AqlrT8YA1o7Ff5wPfMOL0pvL+1X+sw60NN6CcOCqs658emD6RfiXhF7Gu9QcfKBH7ELY2nInLhKSCWVoNL70MQ==}
+    dev: true
+
+  /@types/authorizenet@1.0.2:
+    resolution: {integrity: sha512-7jTrqi9ZitoTVEZdKcPcpDpJ7bOCPzVZudCGQ1u4R0x8YXehE8G29VfascBqcET2nnsVv0gTVFckMor4FOMfvw==}
     dev: true
 
   /@types/bcryptjs@2.4.6:
