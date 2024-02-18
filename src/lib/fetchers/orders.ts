@@ -33,14 +33,21 @@ export async function getOrder(code: string) {
           quantity: true,
         },
         with: {
-          size: {
+          productStock: {
             columns: {
-              title: true,
+              id: true,
             },
-          },
-          color: {
-            columns: {
-              title: true,
+            with: {
+              size: {
+                columns: {
+                  title: true,
+                },
+              },
+              color: {
+                columns: {
+                  title: true,
+                },
+              },
             },
           },
           product: {
@@ -83,4 +90,65 @@ export async function getOrders() {
     },
     orderBy: desc(orders.createdAt),
   });
+}
+
+export async function getUnPaidOrder(id: number) {
+  const session = await auth();
+  if (!session) {
+    throw new Error('Unauthorized');
+  }
+  const order = await db.query.orders.findFirst({
+    where: and(eq(orders.userId, session.id), eq(orders.id, id)),
+    columns: {
+      id: true,
+      code: true,
+      grandTotal: true,
+      createdAt: true,
+    },
+    with: {
+      orderStatuses: {
+        columns: {
+          status: true,
+        },
+        orderBy: desc(orders.createdAt),
+      },
+      orderProducts: {
+        columns: {
+          id: true,
+          price: true,
+          quantity: true,
+        },
+        with: {
+          productStock: {
+            columns: {
+              id: true,
+            },
+            with: {
+              size: {
+                columns: {
+                  title: true,
+                },
+              },
+              color: {
+                columns: {
+                  title: true,
+                },
+              },
+            },
+          },
+          product: {
+            columns: {
+              id: true,
+              title: true,
+              slug: true,
+              thumbnail: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: desc(orders.createdAt),
+  });
+  const paid = order?.orderStatuses.some(status => status.status === 'PAID');
+  return paid ? null : order;
 }

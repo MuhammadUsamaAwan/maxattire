@@ -44,7 +44,7 @@ export function OrderItems({ order, reviewOrder, className, ...props }: Props) {
                     {item.product?.title}
                   </Link>
                   <span className='line-clamp-1 text-xs text-muted-foreground'>
-                    {item.color?.title} / {item.size?.title}
+                    {item.productStock.color?.title} / {item.productStock.size?.title}
                   </span>
                   {reviewOrder && (
                     <Link
