@@ -979,6 +979,7 @@ export const categoriesRelations = relations(categories, ({ one, many }) => ({
     references: [categories.id],
     relationName: 'category_children',
   }),
+  coupons: many(coupons),
 }));
 
 export const productsRelations = relations(products, ({ many }) => ({
@@ -1121,5 +1122,20 @@ export const orderProductsRelations = relations(orderProducts, ({ one }) => ({
   color: one(colors, {
     fields: [orderProducts.colorId],
     references: [colors.id],
+  }),
+}));
+
+export const couponsRelations = relations(coupons, ({ many }) => ({
+  categories: many(categories),
+}));
+
+export const couponCategoriesRelations = relations(couponCategories, ({ one }) => ({
+  coupon: one(coupons, {
+    fields: [couponCategories.couponId],
+    references: [coupons.id],
+  }),
+  category: one(categories, {
+    fields: [couponCategories.categoryId],
+    references: [categories.id],
   }),
 }));

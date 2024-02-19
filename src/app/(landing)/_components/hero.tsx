@@ -15,7 +15,7 @@ export function Hero() {
             alt='hero'
             width={1024}
             height={630}
-            className='h-auto max-h-[500px] w-screen'
+            className='h-auto max-h-[500px] w-screen border-b'
           />
         </CarouselItem>
         <CarouselItem>
@@ -24,7 +24,7 @@ export function Hero() {
             alt='hero'
             width={1024}
             height={585}
-            className='h-auto max-h-[500px] w-screen'
+            className='h-auto max-h-[500px] w-screen border-b'
           />
         </CarouselItem>
       </CarouselContent>
