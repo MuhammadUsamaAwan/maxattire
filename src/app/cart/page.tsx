@@ -8,7 +8,7 @@ import { formatPrice } from '~/lib/utils';
 import { buttonVariants } from '~/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
 import { Separator } from '~/components/ui/separator';
-import { CartItems } from '~/components/layouts/cart-items';
+import { CartItems } from '~/components/checkout/cart-items';
 
 const getCachedData = unstable_cache(
   async () => {

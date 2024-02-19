@@ -9,7 +9,7 @@ import { Badge } from '~/components/ui/badge';
 import { buttonVariants } from '~/components/ui/button';
 import { Icons } from '~/components/icons';
 
-import { getSearchParams } from '../[categorySlug]/_components/category-filters';
+import { getSearchParams } from '../../app/categories/[categorySlug]/_components/category-filters';
 
 type ActiveFiltersProps = {
   searchParams: CategoriesSearchParams | BrandsSearchParams;

@@ -5,7 +5,7 @@ import type { BrandsSearchParams, CategoriesSearchParams } from '~/types';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select';
 
-import { getSearchParams } from '../[categorySlug]/_components/category-filters';
+import { getSearchParams } from '../../app/categories/[categorySlug]/_components/category-filters';
 
 type SortCategoryProductsProps = {
   searchParams: CategoriesSearchParams | BrandsSearchParams;

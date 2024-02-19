@@ -10,9 +10,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/
 import { Badge } from '~/components/ui/badge';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger } from '~/components/ui/tooltip';
-
-import { ActiveFilters } from '../../_components/active-filters';
-import { PriceFilter } from '../../_components/price-filter';
+import { ActiveFilters } from '~/components/categories/active-filters';
+import { PriceFilter } from '~/components/categories/price-filter';
 
 const getCachedData = unstable_cache(
   async (category: string, searchParams: CategoriesSearchParams) => {

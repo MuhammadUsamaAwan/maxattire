@@ -1,14 +1,13 @@
 import { unstable_cache } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-// import { OrderConfirmForm } from '~/components/forms/order-confirm-form';
 import { auth } from '~/lib/actions/auth';
 import { getAddresses } from '~/lib/fetchers/addresses';
 import { getCart } from '~/lib/fetchers/cart';
 import { formatPrice } from '~/lib/utils';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
 import { Separator } from '~/components/ui/separator';
-import { CartItems } from '~/components/layouts/cart-items';
+import { CartItems } from '~/components/checkout/cart-items';
 
 import { OrderConfirmForm } from './_components/order-confirm-form';
 

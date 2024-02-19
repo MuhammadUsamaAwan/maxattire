@@ -5,8 +5,8 @@ import { type CartItems } from '~/lib/fetchers/cart';
 import { cn, formatPrice } from '~/lib/utils';
 import { ScrollArea } from '~/components/ui/scroll-area';
 import { Separator } from '~/components/ui/separator';
+import { UpdateCart } from '~/components/checkout/update-cart';
 import { Icons } from '~/components/icons';
-import { UpdateCart } from '~/components/layouts/update-cart';
 
 type CartItemsProps = {
   items: CartItems;

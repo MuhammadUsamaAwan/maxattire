@@ -5,10 +5,10 @@ import { isUndefined, omitBy } from 'lodash';
 
 import { getFilteredBrandProducts } from '~/lib/fetchers/products';
 import { Button, buttonVariants } from '~/components/ui/button';
+import { SortProducts } from '~/components/categories/sort-products';
 import { Icons } from '~/components/icons';
 import { ProductCard } from '~/components/product-card';
 
-import { SortProducts } from '../../_components/sort-products';
 import { getSearchParams } from './brand-filters';
 
 const getCachedData = unstable_cache(

@@ -5,14 +5,14 @@ import { unslugify } from '~/lib/utils';
 import { BrandFilters } from '../_components/brand-filters';
 import { BrandProducts } from '../_components/brand-products';
 
-export type CategoryPageProps = {
+export type BrandPageProps = {
   params: {
     brandSlug: string;
   };
   searchParams: BrandsSearchParams;
 };
 
-export default function CategoryPage({ searchParams, params: { brandSlug } }: CategoryPageProps) {
+export default function BrandPage({ searchParams, params: { brandSlug } }: BrandPageProps) {
   return (
     <div className='container pb-8 pt-6 md:py-8'>
       <div className='mb-6 space-y-1'>

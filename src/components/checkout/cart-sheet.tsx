@@ -7,8 +7,8 @@ import { Badge } from '~/components/ui/badge';
 import { Button, buttonVariants } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '~/components/ui/sheet';
+import { CartItems } from '~/components/checkout/cart-items';
 import { Icons } from '~/components/icons';
-import { CartItems } from '~/components/layouts/cart-items';
 
 const getCachedData = unstable_cache(
   async () => {
