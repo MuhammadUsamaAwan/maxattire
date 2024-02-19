@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '~/db';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, desc, eq, isNull } from 'drizzle-orm';
 
 import { posts } from '~/db/schema';
 
@@ -14,7 +14,39 @@ export function getBlogPosts() {
       slug: true,
       thumbnail: true,
       tags: true,
+      createdAt: true,
+    },
+    with: {
+      author: {
+        columns: {
+          name: true,
+          image: true,
+        },
+      },
+    },
+    orderBy: desc(posts.createdAt),
+  });
+}
+
+export type BlogPosts = Awaited<ReturnType<typeof getBlogPosts>>;
+
+export function getBlogPost(slug: string) {
+  return db.query.posts.findFirst({
+    where: and(isNull(posts.deletedAt), eq(posts.status, 'active'), eq(posts.slug, slug)),
+    columns: {
+      title: true,
+      thumbnail: true,
+      tags: true,
       description: true,
+      createdAt: true,
+    },
+    with: {
+      author: {
+        columns: {
+          name: true,
+          image: true,
+        },
+      },
     },
   });
 }

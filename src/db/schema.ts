@@ -1139,3 +1139,10 @@ export const couponCategoriesRelations = relations(couponCategories, ({ one }) =
     references: [categories.id],
   }),
 }));
+
+export const postsRelations = relations(posts, ({ one }) => ({
+  author: one(users, {
+    fields: [posts.postedById],
+    references: [users.id],
+  }),
+}));
