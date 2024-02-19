@@ -50,7 +50,8 @@ export function getInitials(name: string | null | undefined) {
     name
       ?.split(' ')
       .map(n => n[0]?.toUpperCase())
-      .join('') ?? ''
+      .join('')
+      .slice(0, 2) ?? ''
   );
 }
 

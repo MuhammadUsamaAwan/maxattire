@@ -18,7 +18,7 @@ export async function getProductReviews(slug: string) {
     .select({
       id: reviews.id,
       rating: reviews.rating,
-      comment: reviews.comment,
+      review: reviews.review,
       createdAt: reviews.createdAt,
       user: {
         id: users.id,
@@ -44,7 +44,7 @@ export async function getReview(orderProductId: number, productId: number) {
     columns: {
       id: true,
       rating: true,
-      comment: true,
+      review: true,
       createdAt: true,
     },
     with: {

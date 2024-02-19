@@ -35,7 +35,7 @@ export async function addReview(rawInput: z.infer<typeof addReviewSchema>) {
       },
     },
   });
-  if (order?.orderStatuses.some(status => status.status === 'PAID')) {
+  if (!order?.orderStatuses.some(status => status.status === 'PAID')) {
     throw new Error('Order not paid');
   }
   const alreadyReviewed = await db.query.reviews.findFirst({

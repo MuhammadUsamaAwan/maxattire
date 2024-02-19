@@ -33,7 +33,7 @@ export function ProductReview({ review }: ProductReviewProps) {
   return (
     <div key={review.id} className='space-y-1'>
       <div className='flex items-center space-x-2'>
-        <Avatar className='size-11 font-semibold'>
+        <Avatar className='size-11'>
           <AvatarImage src={review.user?.image ?? ''} alt={review.user?.name ?? ''} />
           <AvatarFallback>{getInitials(review.user?.name)}</AvatarFallback>
         </Avatar>
@@ -50,7 +50,7 @@ export function ProductReview({ review }: ProductReviewProps) {
         </div>
       </div>
       <Rating rating={review.rating} />
-      <p>{review.comment}</p>
+      <p>{review.review}</p>
     </div>
   );
 }
