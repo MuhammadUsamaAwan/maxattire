@@ -17,6 +17,7 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.string(),
+    NEXT_PUBLIC_FILE_URL: z.string(),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
@@ -31,6 +32,7 @@ export const env = createEnv({
     AUTHORIZE_NET_TRANSACTION_KEY: process.env.AUTHORIZE_NET_TRANSACTION_KEY,
     AUTHORIZE_NET_SANDBOX: process.env.AUTHORIZE_NET_SANDBOX,
     NEXT_PUBLIC_GOOGLE_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+    NEXT_PUBLIC_FILE_URL: process.env.NEXT_PUBLIC_FILE_URL,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,

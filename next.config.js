@@ -8,6 +8,10 @@ const config = {
         protocol: 'https',
         hostname: 'www.alphabroder.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'themaxattire.com',
+      },
     ],
   },
 };

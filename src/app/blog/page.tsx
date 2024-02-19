@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 
 import { getBlogPosts, type BlogPosts } from '~/lib/fetchers/blog';
+import { getFileUrl } from '~/lib/utils';
 import { AspectRatio } from '~/components/ui/aspect-ratio';
 import { Badge } from '~/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
@@ -39,7 +40,7 @@ function PostCard({ post }: PostCardProps) {
         <Link href={`/blog/${post.slug}`}>
           <AspectRatio ratio={4 / 3}>
             {post.thumbnail ? (
-              <Image src={post.thumbnail} alt={post.title} className='object-cover' fill loading='lazy' />
+              <Image src={getFileUrl(post.thumbnail)} alt={post.title} className='object-cover' fill loading='lazy' />
             ) : (
               <PlaceholderImage className='rounded-none' asChild />
             )}
@@ -50,7 +51,7 @@ function PostCard({ post }: PostCardProps) {
         <CardTitle className='line-clamp-1'>{post.title}</CardTitle>
         <div className='flex flex-wrap gap-2'>
           {post.tags?.split(',').map(tag => (
-            <Badge key={tag} variant='outline'>
+            <Badge key={tag} variant='outline' className='font-medium'>
               {tag}
             </Badge>
           ))}

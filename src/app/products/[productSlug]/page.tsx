@@ -102,7 +102,7 @@ export default async function ProductPage({ params: { productSlug }, searchParam
             </TabsList>
             <TabsContent value='description'>
               <div
-                className='prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0'
+                className='prose max-w-full dark:prose-invert'
                 dangerouslySetInnerHTML={{
                   __html: product?.description ?? 'No description is available for this product.',
                 }}

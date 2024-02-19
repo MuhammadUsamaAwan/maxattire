@@ -16,9 +16,9 @@ export default async function WebsitePage({ params: { pageSlug } }: WebsitePageP
   }
 
   return (
-    <div className='container py-10'>
+    <div className='container max-w-3xl py-10'>
       <div
-        className='prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0'
+        className='prose max-w-full dark:prose-invert'
         dangerouslySetInnerHTML={{
           __html: page?.content ?? 'No content available for this page.',
         }}

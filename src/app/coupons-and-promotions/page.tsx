@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { getCoupons, type Coupons } from '~/lib/fetchers/coupon';
+import { getFileUrl } from '~/lib/utils';
 import { AspectRatio } from '~/components/ui/aspect-ratio';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { CopyButton } from '~/components/copy-button';
@@ -38,7 +39,7 @@ function CouponCard({ coupon }: CouponCardProps) {
         <Link href={`/categories/${coupon.category.slug}`}>
           <AspectRatio ratio={4 / 3}>
             {coupon.file ? (
-              <Image src={coupon.file} alt='coupon' className='object-cover' fill loading='lazy' />
+              <Image src={getFileUrl(coupon.file)} alt='coupon' className='object-cover' fill loading='lazy' />
             ) : (
               <PlaceholderImage className='rounded-none' asChild />
             )}

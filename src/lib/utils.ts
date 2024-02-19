@@ -77,3 +77,7 @@ export async function verifyJWT(token: string | undefined) {
     return null;
   }
 }
+
+export function getFileUrl(file?: string | null | undefined) {
+  return `${env.NEXT_PUBLIC_FILE_URL}/${file}`;
+}
