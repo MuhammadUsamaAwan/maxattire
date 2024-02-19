@@ -36,7 +36,7 @@ export function PaymentForm({ orderId }: PaymentFormProps) {
     startTransition(async () => {
       try {
         await payment(input, orderId);
-        void router.replace('/dashboard/orders');
+        void router.replace('/thank-you');
       } catch (error) {
         catchError(error);
       }

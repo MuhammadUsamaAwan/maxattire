@@ -27,6 +27,7 @@ import { CircleUserRoundIcon, DollarSignIcon, Loader2Icon, ShoppingCartIcon } fr
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
 import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { FaGoogle, FaXTwitter } from 'react-icons/fa6';
+import { RiMailSendLine } from 'react-icons/ri';
 
 export const Icons = {
   arrowLeft: ArrowLeftIcon,
@@ -64,4 +65,5 @@ export const Icons = {
   linkedin: FaLinkedin,
   google: FaGoogle,
   twitter: FaXTwitter,
+  mailSend: RiMailSendLine,
 };
